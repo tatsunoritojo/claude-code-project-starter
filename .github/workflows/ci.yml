@@ -69,8 +69,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: install.ps1 / uninstall.ps1 をサンドボックス実行(Windows PowerShell 5.1)
-        shell: powershell
+      - name: install.ps1 / uninstall.ps1 をサンドボックス実行(PowerShell)
+        shell: pwsh
         run: |
           $fake = Join-Path $env:RUNNER_TEMP 'fakehome'
           New-Item -ItemType Directory -Force -Path $fake | Out-Null

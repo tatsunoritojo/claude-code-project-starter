@@ -119,4 +119,7 @@ echo "完了しました。次の手順:"
 echo "  1. ~/.claude/CLAUDE.md の「ユーザープロフィール」のプレースホルダ（{{USER_NAME}} 等）を自分の情報に書き換える"
 echo "  2. Claude Code を再起動して設定を読み込む"
 echo "  3. 'What Skills are available?' で同梱スキルの読み込みを確認する"
-[ -d "$BACKUP_ROOT" ] && echo "  （上書きしたファイルのバックアップ: $BACKUP_ROOT）"
+if [ -d "$BACKUP_ROOT" ]; then
+  echo "  （上書きしたファイルのバックアップ: $BACKUP_ROOT）"
+fi
+exit 0
