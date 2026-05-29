@@ -1,0 +1,17 @@
+{
+  "$comment": "グローバル settings。~/.claude/settings.json として配置される。安全な読み取り系コマンドを既定で許可。プロジェクト固有の許可は各プロジェクトの .claude/settings.json に書く。",
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git branch:*)",
+      "Bash(git show:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(rg:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr list:*)"
+    ]
+  }
+}
