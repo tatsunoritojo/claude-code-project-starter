@@ -1,0 +1,54 @@
+# {{PROJECT_NAME}}
+
+{{ONE_LINE_DESCRIPTION}}
+
+## 次セッション着手用
+- 現在地:
+- 次アクション:
+- 参照ファイル:
+- 未解決 / 別扱い:
+- 最終更新:
+
+<!-- グローバル「セッション終了時の規律」に従い、非軽微な進捗があったセッションを終了するときは必ずこの欄を更新する -->
+
+## 技術スタック
+
+{{TECH_STACK_LIST}}
+
+## 主要エントリポイント
+
+- {{ENTRY_POINT_1}}
+- {{ENTRY_POINT_2}}
+
+## 開発コマンド
+
+{{COMMAND_HINT_OR_POINTER}}
+（詳細は `package.json` / `pyproject.toml` を参照）
+
+## ディレクトリ構造
+
+```
+{{DIRECTORY_TREE_TOP_LEVEL}}
+```
+
+## このプロジェクト固有の作業ルール
+
+{{PROJECT_SPECIFIC_RULES_PLACEHOLDER}}
+
+## このプロジェクトの完了判定（Definition of Done）
+
+このプロジェクトで「完了」と呼ぶための条件:
+
+- [ ] build / lint / test がすべて通る（グローバル CLAUDE.md「完了判定」の必要条件）
+- [ ] {{PROJECT_DOD_REAL_ENV_CHECK}}
+  <!-- 例: production DB に migration 適用 + 該当機能を Admin タブで確認 + Worker 側からの見え方確認 -->
+- [ ] {{PROJECT_DOD_DOMAIN_SPECIFIC}}
+  <!-- 案件固有の確認項目。空欄なら削除 -->
+
+このセクションは案件のフェーズや機能追加に応じて更新する。テストがカバーしていない経路（migration、外部連携、本番固有設定、ログ設定など）を意識的に書き出す。
+
+## 関連ドキュメント
+
+- 概要: `docs/01-overview.md`
+- 設計判断（ADR）: `docs/decisions/`
+- {{OTHER_DOCS}}

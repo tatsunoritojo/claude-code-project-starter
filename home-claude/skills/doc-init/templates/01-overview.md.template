@@ -1,0 +1,40 @@
+# {{PROJECT_NAME}} - 概要
+
+ステータス: {{STATUS}} <!-- active / maintenance / archived -->
+
+## 何を解決するか
+
+{{PROBLEM_STATEMENT}}
+
+## 誰のためか
+
+{{TARGET_USERS}}
+
+## 主要概念
+
+- **{{CONCEPT_1}}**: {{DESCRIPTION_1}}
+- **{{CONCEPT_2}}**: {{DESCRIPTION_2}}
+- **{{CONCEPT_3}}**: {{DESCRIPTION_3}}
+
+## アーキテクチャ図（任意）
+
+<!--
+必要なら Mermaid 図を埋め込む。例:
+
+```mermaid
+flowchart LR
+  User --> WebApp --> DB
+```
+-->
+
+## 主要な処理フロー（任意）
+
+<!--
+必要ならシーケンス図やフロー図を埋め込む。1本だけ、最重要のものに絞る。
+-->
+
+## 関連リンク
+
+- リポジトリ: {{REPO_URL_OR_PATH}}
+- 設計判断: `docs/decisions/`
+- {{OTHER_LINKS}}

@@ -1,0 +1,31 @@
+# NNNN. {{TITLE}}
+
+日付: {{YYYY-MM-DD}}
+
+## Status
+
+<!-- Proposed / Accepted / Deprecated / Superseded by NNNN -->
+Accepted
+
+## Context
+
+<!--
+この判断を必要とした背景・力学を書く。
+- どんな問題に直面しているか
+- どんな制約があるか
+- 何を最適化したいか
+-->
+
+## Decision
+
+<!--
+何を決めたか、明確に1-3文で書く。
+-->
+
+## Consequences
+
+<!--
+- ポジティブな帰結（メリット）
+- ネガティブな帰結（デメリット・トレードオフ）
+- 後続のADRで再考すべき点があれば記載
+-->
