@@ -1,11 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm:*)",
-      "Bash(npx:*)",
       "Bash(git:*)",
-      "Bash(gh:*)",
-      "Bash(expo:*)"
+      "Bash(gh:*)"
     ]
   },
   "hooks": {

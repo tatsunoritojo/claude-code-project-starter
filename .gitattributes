@@ -1,0 +1,2 @@
+# シェルスクリプトは LF 固定。CRLF だとフック/インストーラが bad interpreter で壊れる。
+*.sh text eol=lf

@@ -1,495 +1,103 @@
-# Claude Code Project Starter
+# Claude Code 開発スタイルパック
 
-> A complete template for AI-driven development with Claude Code
+> インストールすると、一貫したペアプログラミング型の Claude Code 運用スタイルを、どの環境でも同じように再現できる設定パック。
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Claude Code](https://img.shields.io/badge/Claude_Code-Ready-brightgreen.svg)](https://code.anthropic.com/)
+このリポジトリは、Claude Code を「対等なペアプログラマー」として運用するための**グローバルルール・スキル・設定・プロジェクト雛形**を1つにまとめたもの。`~/.claude/` に展開することで、影響範囲ベースの実行ポリシー（Green/Yellow/Red）、一次資料優先の規律、ドキュメント整備標準、段階的な進め方といった運用スタイルが、誰の環境でも同じように立ち上がる。
 
-**Start your next project with AI-powered development from day one.**
+固有名・個人情報は含まない匿名化済みパック。プロフィール部分だけ各自で埋めて使う。
 
-This template provides a complete, production-ready configuration for [Claude Code](https://code.anthropic.com/), enabling AI-driven development with best practices, automated workflows, and team collaboration built-in.
-
-## 🌟 Features
-
-### Intelligent Git/GitHub Workflows
-- ✅ **Conventional Commits** - Automated commit message formatting
-- ✅ **Smart Branching** - Intelligent branch naming and management
-- ✅ **PR Automation** - One-command pull request creation
-- ✅ **Code Review** - AI-assisted code reviews
-- ✅ **Auto-Cleanup** - Automatic merged branch deletion
-
-### Project Standards
-- ✅ **Comprehensive Guidelines** - Complete project standards in `CLAUDE.md`
-- ✅ **Code Style Enforcement** - Consistent formatting and conventions
-- ✅ **Security Best Practices** - Built-in security guidelines
-- ✅ **Testing Requirements** - Defined coverage and testing standards
-- ✅ **Documentation Templates** - Ready-to-use documentation structure
-
-### Team Collaboration
-- ✅ **Quick Onboarding** - Detailed onboarding guide for new team members
-- ✅ **Consistent Experience** - Same AI assistant across the entire team
-- ✅ **Knowledge Sharing** - Documented patterns and best practices
-- ✅ **Automated Setup** - One-command project initialization
-
-### Developer Experience
-- ✅ **Session Hooks** - Automatic environment checks on startup
-- ✅ **Personal Skills** - Global skills available across all projects
-- ✅ **Project Skills** - Project-specific conventions and standards
-- ✅ **Cross-Platform** - Works on Linux, macOS, and Windows
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- **Claude Code** - [Install Claude Code](https://code.anthropic.com/install)
-- **Node.js** 18+ (if building Node.js projects)
-- **Git** - Version control
-- **GitHub CLI** (optional) - For enhanced GitHub integration
-
-### Option 1: Use as GitHub Template
-
-1. Click **"Use this template"** button on GitHub
-2. Create your new repository
-3. Clone your new repository
-4. Run the setup script
-
-```bash
-# Linux/macOS
-bash scripts/setup-claude-code.sh
-
-# Windows (PowerShell)
-.\scripts\setup-claude-code.ps1
-```
-
-### Option 2: Clone Directly
-
-```bash
-# Clone this template
-git clone https://github.com/YOUR_USERNAME/claude-code-project-starter.git my-new-project
-cd my-new-project
-
-# Remove template's git history
-rm -rf .git
-git init
-
-# Run setup
-bash scripts/setup-claude-code.sh
-
-# Start your project
-git add .
-git commit -m "chore: initialize project from Claude Code template"
-```
-
-### Option 3: Manual Integration
-
-Copy files into your existing project:
-
-```bash
-# Copy Claude Code configuration
-cp -r claude-code-project-starter/.claude your-project/
-cp claude-code-project-starter/CLAUDE.md your-project/
-cp -r claude-code-project-starter/scripts your-project/
-
-# Run setup
-cd your-project
-bash scripts/setup-claude-code.sh
-```
-
-## 📁 What's Included
+## 何が入っているか
 
 ```
 claude-code-project-starter/
-├── .claude/
-│   ├── settings.json                    # Tool permissions & configurations
-│   ├── hooks/
-│   │   └── session-startup.sh          # Runs on Claude Code start
-│   └── skills/
-│       └── project-conventions/
-│           └── SKILL.md                 # Project-specific conventions
-│
-├── docs/
-│   └── CLAUDE_CODE_ONBOARDING.md       # Team onboarding guide
-│
-├── scripts/
-│   ├── setup-claude-code.sh            # Linux/macOS setup script
-│   └── setup-claude-code.ps1           # Windows PowerShell setup
-│
-├── CLAUDE.md                            # Project standards & guidelines
-├── README.md                            # This file
-├── .gitignore                           # Git ignore patterns
-└── LICENSE                              # MIT License
+├── install.ps1 / install.sh     # ~/.claude へ展開するインストーラ
+├── home-claude/                 # → ~/.claude/ に展開される中身
+│   ├── CLAUDE.md                # 全セッション共通のグローバルルール（スタイル本体）
+│   ├── settings.json            # 安全な読み取り系コマンドを既定許可
+│   └── skills/                  # 汎用スキル14個
+└── project-template/            # → 新規プロジェクトのルートへコピーして使う雛形
+    ├── CLAUDE.md                # プロジェクト用 CLAUDE.md（穴埋め式）
+    ├── docs/01-overview.md      # 1ページ概要テンプレ
+    ├── docs/decisions/          # ADR（設計判断記録）の雛形
+    └── .claude/                 # プロジェクト用 settings + セッション起動フック
 ```
 
-### Personal Skills (Global)
+### グローバルルール（スタイル本体）
 
-Additionally, this template installs **Personal Skills** in `~/.claude/skills/`:
+`home-claude/CLAUDE.md` が運用スタイルの中心。主な内容:
 
-```
-~/.claude/skills/
-└── git-github-workflow/
-    └── SKILL.md                         # Available in ALL your projects
-```
+- **影響範囲ベースの実行ポリシー（Green/Yellow/Red）** — 安全な操作は無確認、影響のある操作は簡潔に説明して実行、破壊的・不可逆な操作は事前確認
+- **一次資料・ファクトチェック原則** — 推測で断定しない、出典明示、`file.py:91-103` 形式での引用
+- **完了判定（Definition of Done）** — lint/test/build 通過は必要条件であって十分条件ではない
+- **進捗の可視化・小刻み進行** — 中規模以上は Phase に分け、各 Phase 末に承認接点を置く
+- **ドキュメント整備ルール** — CLAUDE.md + docs/01-overview.md + ADR の必須3点構成
+- **ルール衝突時の優先順位** — 安全性 > 一次資料 > 体験影響 > 進捗可視化 > 簡潔さ
 
-## 📚 Documentation
+### 同梱スキル（14個）
 
-### Core Files
+| スキル | 用途 |
+|---|---|
+| `exec-boundary-guard` | 操作実行前に Green/Yellow/Red を判定 |
+| `design-actor-impact` | 設計変更をアクター視点で影響評価 |
+| `handoff-closeout` | セッション終了時の引き継ぎ処理 |
+| `repo-health-check` | プロジェクト着手時の初動確認 |
+| `deploy-check` | デプロイ前の build/lint/test 一括確認 |
+| `doc-init` | 必須ドキュメント3点の整備 |
+| `incident-response` | 本番障害対応（Plan B + Plan A 並行） |
+| `db-audit` | DB 設計レビュー（制約・運用・観測） |
+| `database-migration-review` | zero-downtime マイグレーションのレビュー |
+| `search-first` | 実装前に既存コード・一次情報を確認 |
+| `strategic-compact` | 長セッションでの compact 判断支援 |
+| `mermaid-sequence-diagram` | 動作フローのシーケンス図可視化 |
+| `readme-portfolio` | 対外公開向け README の作成 |
+| `git-github-workflow` | コミット・ブランチ・PR ワークフロー |
 
-| File | Purpose |
-|------|---------|
-| **CLAUDE.md** | Complete project standards, conventions, and guidelines |
-| **docs/CLAUDE_CODE_ONBOARDING.md** | Comprehensive team onboarding guide |
-| **.claude/settings.json** | Tool permissions and hook configurations |
-| **.claude/skills/** | Project-specific AI skills |
-| **scripts/setup-claude-code.sh** | Automated project setup |
+## インストール
 
-### Quick Links
+### Windows (PowerShell)
 
-- 📖 [Project Standards](CLAUDE.md) - All conventions and guidelines
-- 🎓 [Team Onboarding](docs/CLAUDE_CODE_ONBOARDING.md) - Getting started guide
-- 🔧 [Setup Scripts](scripts/) - Automated configuration
-- 🎯 [Claude Code Docs](https://code.anthropic.com/docs) - Official documentation
-
-## 🎯 Usage Examples
-
-### Creating a Commit
-
-```
-# In Claude Code:
-Review my changes and create a commit
-
-# Claude will:
-# 1. Analyze your changes
-# 2. Suggest a Conventional Commit message
-# 3. Create the commit with proper formatting
-```
-
-### Starting a New Feature
-
-```
-# In Claude Code:
-Create a new feature branch for user authentication
-
-# Claude will:
-# 1. Ensure you're on main
-# 2. Pull latest changes
-# 3. Create: feature/user-authentication
-# 4. Confirm the branch creation
+```powershell
+.\install.ps1
+# プロフィールを同時に埋める場合:
+.\install.ps1 -UserName "山田太郎" -UserRole "バックエンドエンジニア"
+# 既存の ~/.claude/CLAUDE.md 等を上書きする場合（バックアップは自動取得）:
+.\install.ps1 -Force
 ```
 
-### Creating a Pull Request
-
-```
-# In Claude Code:
-Create a pull request for my current branch
-
-# Claude will:
-# 1. Push your branch to remote
-# 2. Generate PR title and description
-# 3. Create the PR using gh CLI
-# 4. Return the PR URL
-```
-
-### Project Cleanup
-
-```
-# In Claude Code:
-Clean up all merged branches
-
-# Claude will:
-# 1. Identify merged branches
-# 2. Delete local branches
-# 3. Delete remote branches
-# 4. Prune remote references
-```
-
-## 🛠️ Customization
-
-### Modifying Project Standards
-
-Edit `CLAUDE.md` to define your project's specific:
-
-- Code style and formatting rules
-- Git/GitHub workflows
-- Testing requirements
-- Security guidelines
-- Architecture decisions
-- Naming conventions
-
-### Adding Custom Skills
-
-Create new skills in `.claude/skills/`:
+### macOS / Linux
 
 ```bash
-mkdir -p .claude/skills/your-skill-name
-nano .claude/skills/your-skill-name/SKILL.md
+bash install.sh
+# プロフィールを同時に埋める場合:
+USER_NAME="山田太郎" USER_ROLE="バックエンドエンジニア" bash install.sh
+# 上書きする場合:
+FORCE=1 bash install.sh
 ```
 
-**SKILL.md template:**
+インストーラの挙動:
+- `~/.claude/CLAUDE.md` と `settings.json` が**既に存在する場合は上書きしない**。推奨内容を `*.stylepack` として書き出すので、手動マージするか `-Force` / `FORCE=1` で上書きする（その際は自動でバックアップを取る）
+- スキルは同名が既存ならスキップ（`-Force` で上書き、バックアップあり）
 
-```yaml
----
-name: your-skill-name
-description: What this skill does and when to use it
-allowed-tools: Bash(npm:*), Read, Write
----
+インストール後、`~/.claude/CLAUDE.md` の「ユーザープロフィール」にあるプレースホルダ（`{{USER_NAME}}` 等）を自分の情報に書き換える。
 
-# Your Skill Name
+## 新規プロジェクトでの雛形の使い方
 
-## Instructions
-[Step-by-step guidance]
-
-## Examples
-[Usage examples]
-```
-
-### Configuring Permissions
-
-Edit `.claude/settings.json` to control tool access:
-
-```json
-{
-  "permissions": {
-    "allow": [
-      "Bash(npm:*)",
-      "Bash(git:*)",
-      "Bash(your-tool:*)"
-    ]
-  }
-}
-```
-
-### Adding Hooks
-
-Create custom hooks in `.claude/hooks/`:
+新しいプロジェクトを始めるときは `project-template/` の中身をプロジェクトのルートにコピーする。
 
 ```bash
-# Example: pre-commit hook
-nano .claude/hooks/pre-commit.sh
-chmod +x .claude/hooks/pre-commit.sh
+cp -r project-template/CLAUDE.md project-template/docs project-template/.claude /path/to/your-project/
 ```
 
-## 🏗️ Project Types
+コピー後、`CLAUDE.md` と `docs/01-overview.md` の `{{...}}` プレースホルダを埋める。グローバルルールは `~/.claude/CLAUDE.md` 側で適用されるので、プロジェクト側には固有情報だけを書く。
 
-This template works with any project type. Customize for your stack:
+## 手動インストール（スクリプトを使わない場合）
 
-### React/React Native
+1. `home-claude/CLAUDE.md` を `~/.claude/CLAUDE.md` にコピー（既存があればマージ）
+2. `home-claude/skills/*` を `~/.claude/skills/` にコピー
+3. `home-claude/settings.json` の permissions を `~/.claude/settings.json` にマージ
+4. `~/.claude/CLAUDE.md` のプロフィールを編集
+5. Claude Code を再起動
 
-```markdown
-# In CLAUDE.md:
-- Framework: React Native with Expo
-- State Management: Redux / Zustand
-- Styling: StyleSheet / Tailwind
-```
+## ライセンス
 
-### Node.js/TypeScript
-
-```markdown
-# In CLAUDE.md:
-- Runtime: Node.js 18+
-- Language: TypeScript 5+
-- Framework: Express / NestJS
-```
-
-### Python
-
-```markdown
-# In CLAUDE.md:
-- Language: Python 3.11+
-- Framework: FastAPI / Django
-- Package Manager: Poetry / pip
-```
-
-### Other Languages
-
-Easily adaptable for:
-- Go
-- Rust
-- Java/Kotlin
-- C#/.NET
-- PHP
-- Ruby
-
-## 👥 Team Collaboration
-
-### For Team Leads
-
-1. **Setup Template**
-   ```bash
-   # Make this repository a template on GitHub
-   gh repo edit --template=true
-   ```
-
-2. **Create Team Guidelines**
-   - Customize `CLAUDE.md` for your team
-   - Define project-specific conventions
-   - Add security policies
-
-3. **Share with Team**
-   - Have team members use the template
-   - Ensure everyone runs setup scripts
-   - Review onboarding documentation together
-
-### For Team Members
-
-1. **Clone Team's Template**
-   ```bash
-   # Use your team's template repository
-   gh repo create my-project --template=team/project-template
-   ```
-
-2. **Run Setup**
-   ```bash
-   bash scripts/setup-claude-code.sh
-   ```
-
-3. **Review Standards**
-   - Read `CLAUDE.md`
-   - Review `docs/CLAUDE_CODE_ONBOARDING.md`
-   - Ask questions in team chat
-
-## 🔐 Security
-
-### Sensitive Data Protection
-
-This template automatically configures `.gitignore` to exclude:
-
-- `.env` files
-- API keys and secrets
-- Local settings (`.claude/settings.local.json`)
-- Credentials and tokens
-
-### Security Best Practices
-
-See `CLAUDE.md` for complete security guidelines including:
-
-- Input validation
-- Data sanitization
-- Authentication/authorization
-- Dependency management
-- Secret management
-
-## 🧪 Testing
-
-### Running Tests
-
-Customize test commands in `CLAUDE.md`:
-
-```markdown
-## Testing
-
-### Test Commands
-
-```bash
-# Run all tests
-npm test
-
-# Run with coverage
-npm test -- --coverage
-```
-
-### Coverage Requirements
-
-- Minimum: 70%
-- Target: 85%
-- Critical paths: 95%+
-```
-```
-
-## 📦 Deployment
-
-### CI/CD Integration
-
-Add GitHub Actions workflow:
-
-```yaml
-# .github/workflows/claude-code-check.yml
-name: Claude Code Standards
-
-on: [push, pull_request]
-
-jobs:
-  check-standards:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Verify CLAUDE.md exists
-        run: test -f CLAUDE.md
-      - name: Check commit message format
-        run: |
-          # Add conventional commit check
-```
-
-## 🤝 Contributing
-
-Contributions are welcome! Please:
-
-1. Fork this repository
-2. Create a feature branch
-3. Make your changes
-4. Follow the commit conventions
-5. Submit a pull request
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
-
-## 📄 License
-
-This template is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- [Claude Code](https://code.anthropic.com/) by Anthropic
-- [Conventional Commits](https://www.conventionalcommits.org/)
-- The open-source community
-
-## 🔗 Resources
-
-- [Claude Code Documentation](https://code.anthropic.com/docs)
-- [Conventional Commits Spec](https://www.conventionalcommits.org/)
-- [GitHub CLI](https://cli.github.com/)
-- [Git Best Practices](https://git-scm.com/book/en/v2)
-
-## 💬 Support
-
-- 📧 **Issues**: [GitHub Issues](https://github.com/YOUR_USERNAME/claude-code-project-starter/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/YOUR_USERNAME/claude-code-project-starter/discussions)
-- 📖 **Documentation**: [Wiki](https://github.com/YOUR_USERNAME/claude-code-project-starter/wiki)
-
----
-
-**Made with ❤️ and AI**
-
-Start building better software with Claude Code today! 🚀
-
----
-
-## Quick Reference
-
-### Common Commands
-
-| Command | Description |
-|---------|-------------|
-| `bash scripts/setup-claude-code.sh` | Initialize Claude Code configuration |
-| Claude: "What Skills are available?" | List available skills |
-| Claude: "Review my changes and create a commit" | Create formatted commit |
-| Claude: "Create a PR" | Open pull request |
-| Claude: "Clean up merged branches" | Delete merged branches |
-
-### File Structure
-
-```
-Your Project/
-├── .claude/          # Claude Code configuration
-├── docs/             # Documentation
-├── scripts/          # Automation scripts
-├── src/              # Source code (your files)
-└── CLAUDE.md         # Project standards
-```
-
-### Getting Help
-
-1. Check `CLAUDE.md` for project standards
-2. Review `docs/CLAUDE_CODE_ONBOARDING.md` for usage guide
-3. Ask Claude Code: "Help me understand [topic]"
-4. Create an issue on GitHub
-
-Happy coding! 🎉
+MIT License（[LICENSE](LICENSE) 参照）。一部スキルは MIT ライセンスの先行実装を改編して含む（各 SKILL.md の `origin` を参照）。

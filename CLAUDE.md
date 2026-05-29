@@ -1,346 +1,49 @@
-# Claude Code Project Configuration
+# Claude Code 開発スタイルパック
 
-## Overview
+Claude Code をペアプログラマーとして運用するためのグローバルルール・スキル・設定・プロジェクト雛形を1つにまとめた配布パッケージ。`~/.claude/` に展開して使う。
 
-This project uses **Claude Code** for AI-driven development. This document defines project standards, conventions, and guidelines that Claude should follow.
+## 次セッション着手用
+- 現在地: 旧テンプレート（React Native/Habit Tracker 専用・英語）を匿名化スタイルパックとして再生済み
+- 次アクション: 実機検証（クリーン環境で install.ps1/.sh を流して ~/.claude 展開を確認）
+- 参照ファイル: `home-claude/CLAUDE.md`, `install.ps1`, `install.sh`, `README.md`
+- 未解決 / 別扱い: なし
+- 最終更新: 2026-05-29
 
-## Project Information
+## このリポジトリの構成
 
-- **Name**: Habit Tracker
-- **Type**: React Native Mobile Application (Expo)
-- **Language**: TypeScript
-- **Package Manager**: npm
-- **Framework**: React Native with Expo
+- `home-claude/` — `~/.claude/` に展開される中身（グローバル CLAUDE.md / settings.json / skills）
+- `project-template/` — 新規プロジェクトのルートにコピーする雛形
+- `install.ps1` / `install.sh` — グローバル展開インストーラ
+- 詳細は `docs/01-overview.md` を参照
 
-## Development Standards
+## このプロジェクト固有の作業ルール
 
-### Code Style
+### 匿名化の鉄則（最重要）
 
-- **Formatter**: Prettier
-- **Linter**: ESLint with TypeScript support
-- **Style Guide**: Airbnb TypeScript Style Guide
-- **Indentation**: 2 spaces
-- **Quotes**: Single quotes for strings
-- **Semicolons**: Required
+このパッケージは**完全公開・匿名化前提**。個人情報・固有名を一切含めない。コミット前に必ず次のカテゴリの混入を grep で確認する:
 
-### File Organization
+- 個人の氏名（ローマ字・漢字表記）
+- 所属企業名・派遣先名・業態名
+- 個人のホームディレクトリパス（`C:\Users\<name>` など）や個人運用ディレクトリの絶対パス
+- 実在プロダクト名・実在組織名
+- 個人運用システムへの依存参照（秘書システム・案件管理・キャリア管理など）
+- スキル原本に残る個人署名（`adapted by <name>` など）
 
-```
-src/
-├── components/     # Reusable UI components
-├── screens/        # Screen components
-├── hooks/          # Custom React hooks
-├── services/       # Business logic and API calls
-├── utils/          # Utility functions
-├── types/          # TypeScript type definitions
-└── lib/            # External library configurations
-```
+具体的なスキャン用トークン一覧は、公開ファイルにベタ書きせず、メンテナの手元（git 管理外のローカルメモ）に置く。スキルや CLAUDE.md を追加・更新したら、このスキャンを完了判定に含める。
 
-### Naming Conventions
+### 改行コード
 
-- **Files**: `camelCase.ts` or `PascalCase.tsx` (for React components)
-- **Components**: `PascalCase`
-- **Functions**: `camelCase`
-- **Constants**: `UPPER_SNAKE_CASE`
-- **Types/Interfaces**: `PascalCase`
-- **Private functions**: Prefix with `_`
+`*.sh` は LF 固定（`.gitattributes` で強制）。CRLF だとフックや install.sh が `bad interpreter` で壊れる。
 
-## Git/GitHub Workflow
+## このプロジェクトの完了判定（Definition of Done）
 
-### Commit Standards
+- [ ] 個人情報トークンの grep スキャンが 0 件
+- [ ] `home-claude/` の skill 14個が揃っている
+- [ ] install スクリプトがクリーンな ~/.claude（存在しない/既存あり）両方で安全に動く
+- [ ] README のインストール手順が実際の挙動と一致している
 
-Follow **Conventional Commits** specification:
+## 関連ドキュメント
 
-```
-<type>(<scope>): <subject>
-
-[optional body]
-
-[optional footer]
-```
-
-**Types:**
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation changes
-- `style`: Code style changes (formatting, etc.)
-- `refactor`: Code refactoring
-- `perf`: Performance improvements
-- `test`: Adding or updating tests
-- `chore`: Maintenance tasks
-
-**Scopes (examples):**
-- `auth`: Authentication
-- `ui`: User interface
-- `api`: API integration
-- `db`: Database/Firestore
-- `notification`: Push notifications
-- `cheer`: Cheer/reaction features
-
-**Examples:**
-
-```bash
-feat(auth): implement OAuth2 login
-fix(ui): resolve card animation glitch
-docs(readme): update installation steps
-chore(deps): upgrade React Native to 0.72
-```
-
-### Branch Naming
-
-Format: `<type>/<short-description>`
-
-```bash
-feature/add-user-profile
-fix/login-validation
-docs/api-documentation
-chore/upgrade-dependencies
-```
-
-### Pull Request Requirements
-
-- **Title**: Follow commit message convention
-- **Description**: Use PR template
-- **Review**: Minimum 1 approval (for team projects)
-- **Tests**: All tests must pass
-- **No conflicts**: Must be up to date with main branch
-
-## Testing
-
-### Test Structure
-
-```
-__tests__/
-├── unit/           # Unit tests
-├── integration/    # Integration tests
-└── e2e/            # End-to-end tests (if applicable)
-```
-
-### Test Commands
-
-```bash
-# Run all tests
-npm test
-
-# Run tests in watch mode
-npm test -- --watch
-
-# Run tests with coverage
-npm test -- --coverage
-
-# Run specific test file
-npm test path/to/test.test.ts
-```
-
-### Coverage Requirements
-
-- **Minimum coverage**: 70%
-- **Target coverage**: 85%
-- **Critical paths**: 95%+
-
-## Firebase/Firestore
-
-### Security
-
-- **Never commit**: `google-services.json`, `.env` files, API keys
-- **Always use**: Environment variables for sensitive data
-- **Firestore rules**: Must be tested before deployment
-
-### Naming Conventions
-
-- **Collections**: `snake_case` (e.g., `user_profiles`, `habit_cards`)
-- **Documents**: Use UUIDs or meaningful IDs
-- **Fields**: `snake_case` (e.g., `created_at`, `user_id`)
-
-## Code Review Guidelines
-
-### What to Check
-
-- [ ] Code follows project conventions
-- [ ] No sensitive data exposed
-- [ ] Tests are included and passing
-- [ ] Documentation updated (if needed)
-- [ ] No console.log or debug code
-- [ ] Error handling is appropriate
-- [ ] Performance considerations addressed
-- [ ] Accessibility considerations (for UI)
-
-### Review Process
-
-1. Automated checks must pass (linting, tests, build)
-2. Manual code review by peer
-3. Testing on development environment
-4. Approval and merge
-
-## Dependencies Management
-
-### Adding Dependencies
-
-```bash
-# Production dependency
-npm install <package-name>
-
-# Development dependency
-npm install --save-dev <package-name>
-```
-
-### Before Adding a New Dependency
-
-- [ ] Check if similar functionality exists
-- [ ] Review package quality (stars, downloads, maintenance)
-- [ ] Check bundle size impact
-- [ ] Review security vulnerabilities
-- [ ] Consider alternatives
-
-### Regular Maintenance
-
-```bash
-# Check for outdated packages
-npm outdated
-
-# Security audit
-npm audit
-
-# Fix security issues
-npm audit fix
-```
-
-## Performance Guidelines
-
-### React Native Best Practices
-
-- Use `React.memo()` for expensive components
-- Implement `useMemo()` and `useCallback()` appropriately
-- Avoid inline functions in render
-- Optimize FlatList with `getItemLayout`, `keyExtractor`
-- Use `InteractionManager` for heavy operations
-- Profile with React DevTools
-
-### Bundle Size
-
-- Monitor app size regularly
-- Use code splitting where possible
-- Lazy load heavy components
-- Optimize images and assets
-
-## Security Guidelines
-
-### Sensitive Data
-
-- **Never commit**:
-  - API keys
-  - Firebase configuration files (`google-services.json`)
-  - `.env` files
-  - Private keys
-  - User passwords or tokens
-
-### Code Security
-
-- Validate all user input
-- Sanitize data before database operations
-- Use parameterized queries (Firestore)
-- Implement proper authentication checks
-- Follow OWASP Mobile Top 10
-
-## Deployment
-
-### Pre-Deployment Checklist
-
-- [ ] All tests passing
-- [ ] No console warnings or errors
-- [ ] Security audit clean (`npm audit`)
-- [ ] Environment variables configured
-- [ ] Firebase rules updated
-- [ ] Documentation up to date
-- [ ] Version number bumped (semantic versioning)
-
-### Version Numbering
-
-Follow **Semantic Versioning** (semver):
-
-- `MAJOR.MINOR.PATCH`
-- **MAJOR**: Breaking changes
-- **MINOR**: New features (backward compatible)
-- **PATCH**: Bug fixes
-
-## AI-Driven Development with Claude
-
-### When to Use Claude Code
-
-- Writing boilerplate code
-- Refactoring complex logic
-- Writing tests
-- Documentation generation
-- Code reviews
-- Debugging assistance
-- Architecture decisions
-
-### How to Work with Claude
-
-1. **Be specific**: Provide clear context and requirements
-2. **Review output**: Always review generated code
-3. **Test thoroughly**: Never merge without testing
-4. **Iterate**: Provide feedback for improvements
-5. **Learn patterns**: Understand the code, don't just copy
-
-### Claude Code Skills Available
-
-This project includes the following Skills:
-
-- `git-github-workflow`: Git/GitHub operations
-- `project-conventions`: Project-specific standards (this file)
-
-See `.claude/skills/` directory for details.
-
-## Troubleshooting
-
-### Common Issues
-
-**Issue**: Metro bundler won't start
-```bash
-# Solution
-npx react-native start --reset-cache
-```
-
-**Issue**: Build fails after dependency update
-```bash
-# Solution
-rm -rf node_modules
-npm install
-cd ios && pod install && cd ..  # For iOS
-```
-
-**Issue**: Firebase connection issues
-```bash
-# Check .env configuration
-# Verify google-services.json is present
-# Check Firebase console for project status
-```
-
-## Resources
-
-### Documentation
-
-- [React Native Docs](https://reactnative.dev/)
-- [Expo Docs](https://docs.expo.dev/)
-- [Firebase Docs](https://firebase.google.com/docs)
-- [TypeScript Docs](https://www.typescriptlang.org/docs/)
-
-### Project-Specific
-
-- [API Documentation](docs/API.md)
-- [Architecture Overview](docs/ARCHITECTURE.md)
-- [Contributing Guide](.github/CONTRIBUTING.md)
-
-## Contact
-
-For questions or issues:
-
-- Create an issue on GitHub
-- Contact the maintainer
-- Join the team Slack channel (if applicable)
-
----
-
-**Last Updated**: 2025-12-30
-**Maintained By**: Development Team
+- 概要: `docs/01-overview.md`
+- 設計判断（ADR）: `docs/decisions/`
+- 使い方: `README.md`

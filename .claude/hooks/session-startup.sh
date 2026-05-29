@@ -1,35 +1,20 @@
 #!/bin/bash
 #
-# Claude Code Session Startup Hook
-# Runs when a new Claude Code session starts
+# セッション起動フック（このリポジトリ用）
 #
 
-echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "  Claude Code Session Started"
-echo "  Project: $(basename $CLAUDE_PROJECT_DIR)"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo ""
-echo "📚 Available Skills:"
-echo "  - git-github-workflow: Git/GitHub operations"
-echo "  - project-conventions: Project standards"
-echo ""
-echo "💡 Quick Commands:"
-echo "  - 'What Skills are available?' - List all skills"
-echo "  - Review CLAUDE.md for project standards"
-echo ""
-echo "🔍 Project Status:"
+DIR="$CLAUDE_PROJECT_DIR"
 
-# Check git status
-if [ -d "$CLAUDE_PROJECT_DIR/.git" ]; then
-  BRANCH=$(cd "$CLAUDE_PROJECT_DIR" && git rev-parse --abbrev-ref HEAD 2>/dev/null)
-  echo "  Git branch: $BRANCH"
+echo ""
+echo "=== Claude Code 開発スタイルパック ==="
+
+if [ -d "$DIR/.git" ]; then
+  BRANCH=$(cd "$DIR" && git rev-parse --abbrev-ref HEAD 2>/dev/null)
+  DIRTY=$(cd "$DIR" && git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
+  echo "ブランチ: $BRANCH（未コミット変更: ${DIRTY} 件）"
 fi
 
-# Check if dependencies are installed
-if [ ! -d "$CLAUDE_PROJECT_DIR/node_modules" ]; then
-  echo "  ⚠️  Dependencies not installed. Run: npm install"
-fi
-
+echo "起動時の推奨: CLAUDE.md（匿名化の鉄則）と docs/01-overview.md を読む"
+echo "スキル/ルール変更時は個人情報トークンの grep スキャンを完了判定に含める"
 echo ""
 exit 0
