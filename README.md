@@ -5,6 +5,7 @@
 <p align="center">経験のある開発者が Claude Code に仕込んでいる「働き方のルール」一式を、<br>そのまま自分の環境にコピーできます。</p>
 
 <p align="center">
+  <a href="https://github.com/tatsunoritojo/claude-code-project-starter/actions/workflows/ci.yml"><img src="https://github.com/tatsunoritojo/claude-code-project-starter/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
   <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey" alt="Platform">
   <img src="https://img.shields.io/badge/setup-3%20steps-brightgreen" alt="Setup">
@@ -77,6 +78,30 @@ USER_NAME="山田太郎" USER_ROLE="バックエンドエンジニア" bash inst
 ```
 
 まだ自己紹介（プロフィール）が未入力なら `profile: 未設定` と出て、Claude が「プロフィールを設定しましょうか？」と声をかけます。名前・役割などを答えるだけで、Claude が設定ファイルを書き込みます。
+
+## 使ってみる（イメージ）
+
+初回起動でプロフィールを設定する流れ:
+
+```text
+[開発スタイルパック] 有効 ｜ skills: 14 ｜ profile: 未設定
+
+Claude: スタイルパックを入れた直後ですね。プロフィールを設定しましょうか？
+        お名前と役割を教えてください。
+あなた: 山田太郎、バックエンドエンジニア
+Claude: 設定しました（~/.claude/CLAUDE.md を更新）。使えるスキルは14個です。
+```
+
+危ない操作の前に確認が入る様子:
+
+```text
+あなた: もう要らないテーブルだから users を消しといて
+Claude: 本番DBのテーブル削除は影響が大きいので、実行前に確認させてください。
+        対象: users テーブル / 影響: 復元できません。進めてよいですか？
+```
+
+> [!NOTE]
+> 上記は挙動のイメージです。実際の応答は状況によって変わります。
 
 ---
 
@@ -177,6 +202,40 @@ claude-code-project-starter/
 6. Claude Code を再起動
 
 </details>
+
+### アンインストール
+
+パックが入れたスキルと起動時あいさつを取り除きます。安全のため**既定はドライラン**（消える内容を表示するだけ）です。
+
+**Windows（PowerShell）**
+
+```powershell
+.\uninstall.ps1        # 何が消えるか表示するだけ
+.\uninstall.ps1 -Yes   # 実際に削除
+```
+
+**macOS / Linux**
+
+```bash
+bash uninstall.sh        # 何が消えるか表示するだけ
+YES=1 bash uninstall.sh  # 実際に削除
+```
+
+`settings.json` と `CLAUDE.md` は自分で編集している可能性があるため、自動では消しません（表示される手順で手動で外します）。
+
+## よくある質問
+
+**Q. いま使っている `~/.claude` の設定は壊れませんか？**
+壊れません。`CLAUDE.md` と `settings.json` がすでにある場合は上書きせず `〜.stylepack` に書き出します。同名のスキルはスキップします。
+
+**Q. やめたくなったら戻せますか？**
+`uninstall.ps1` / `uninstall.sh` で取り除けます。`-Force` で上書きした場合は `~/.claude/.stylepack-backup-*` から元に戻せます。
+
+**Q. Windows でも動きますか？**
+動きます。インストールには PowerShell スクリプトを用意しています。起動時あいさつの表示にはシェルが必要ですが、出なくてもルールとスキルは問題なく動きます。
+
+**Q. 中身は自分用に変えられますか？**
+はい。`~/.claude/CLAUDE.md`（働き方ルール）や各スキルの `SKILL.md` を直接編集できます。
 
 ## ライセンス
 
