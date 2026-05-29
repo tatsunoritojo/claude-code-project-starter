@@ -2,7 +2,8 @@
 #
 # 開発スタイルパックのアンインストール（macOS / Linux）
 #
-# パックが入れたスキルと起動グリーティングフックを ~/.claude から取り除く。
+# インストール時に記録したマニフェスト（~/.claude/.stylepack-manifest）に載っている
+# ものだけを取り除く。ユーザー自前の同名スキルや手で置いたファイルには触らない。
 # 既定はドライラン（削除内容の表示のみ）。実際に削除するには YES=1 を付ける:
 #   bash uninstall.sh        … 何が消えるか表示するだけ
 #   YES=1 bash uninstall.sh  … 実際に削除
@@ -11,35 +12,43 @@
 #
 set -euo pipefail
 
-SRC_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SRC_SKILLS="$SRC_ROOT/home-claude/skills"
 TARGET="$HOME/.claude"
+MANIFEST="$TARGET/.stylepack-manifest"
 YES="${YES:-0}"
 
 echo "アンインストール対象: $TARGET"
+
+if [ ! -f "$MANIFEST" ]; then
+  echo ""
+  echo "マニフェスト（$MANIFEST）が見つかりません。"
+  echo "このパックの導入記録がないため、自動削除は行いません。"
+  echo "手動で確認する場合は ~/.claude/skills と ~/.claude/hooks/session-greeting.sh を見てください。"
+  exit 0
+fi
+
 [ "$YES" = "1" ] || echo "(ドライラン。実際に削除するには YES=1 を付けて実行)"
 echo ""
 
-remove_item() {
-  local path="$1"
-  [ -e "$path" ] || return 0
+removed_any=0
+while IFS= read -r rel; do
+  [ -n "$rel" ] || continue
+  path="$TARGET/$rel"
+  [ -e "$path" ] || continue
   if [ "$YES" = "1" ]; then
     rm -rf "$path"
-    echo "  削除: ${path#"$TARGET"/}"
+    echo "  削除: $rel"
   else
-    echo "  削除予定: ${path#"$TARGET"/}"
+    echo "  削除予定: $rel"
   fi
-}
+  removed_any=1
+done < "$MANIFEST"
 
-# パックが配布したスキルだけを対象にする（ユーザー自作の同名でないスキルは触らない）
-if [ -d "$SRC_SKILLS" ]; then
-  for s in "$SRC_SKILLS"/*/; do
-    remove_item "$TARGET/skills/$(basename "$s")"
-  done
+[ "$removed_any" = "1" ] || echo "  （マニフェストに記載の項目は既に存在しません）"
+
+if [ "$YES" = "1" ]; then
+  rm -f "$MANIFEST"
+  echo "  削除: .stylepack-manifest"
 fi
-
-# 起動グリーティングフック
-remove_item "$TARGET/hooks/session-greeting.sh"
 
 echo ""
 echo "手動で確認してください（自動では触りません）:"

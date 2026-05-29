@@ -7,8 +7,8 @@
 # CI（.github/workflows/ci.yml）とローカルの両方で使う。
 #
 # 除外:
-#   - LICENSE        … MIT の著作者表記として実名を許容
-#   - scripts/       … このスクリプト自身が検出トークン一覧を含むため
+#   - LICENSE                 … MIT の著作者表記として実名を許容
+#   - check-anonymization.sh  … このスクリプト自身が検出トークン一覧を含むため
 #   - .git/
 #
 set -uo pipefail
@@ -18,15 +18,15 @@ ROOT="$(pwd)"
 
 # 検出対象トークン（ERE）。
 # 注意:
-#   - 個人ホームパス `C:\Users\tatsu` と `C:\ideas` は厳密一致させる
+#   - 個人ホームパス（`C:\Users\tatsu` / `C:/Users/tatsu`）と `C:\ideas` は厳密一致させる
 #     （GitHub ユーザー名はリポジトリの公開アドレスそのものなので、`tatsu` 単体では検出しない）。
 #   - 汎用の `ideas/` ディレクトリ機能は誤検出しない。
-PATTERN='東城|立憲|Tatsunori|Tojo|onedrop|Shifree|シフリー|きろくる|Eumenes|広島大学|フクスケ|SharePoint|secretary|business-docs|career-master|shift-scheduler|attendance-desktop|correspondence-school|adapted by tojo|C:\\Users\\tatsu|C:\\ideas'
+PATTERN='東城|立憲|Tatsunori|Tojo|onedrop|Shifree|シフリー|きろくる|Eumenes|広島大学|フクスケ|SharePoint|secretary|business-docs|career-master|shift-scheduler|attendance-desktop|correspondence-school|adapted by tojo|C:\\Users\\tatsu|C:/Users/tatsu|C:\\ideas'
 
 HITS=$(grep -rInE "$PATTERN" "$ROOT" \
   --exclude-dir=.git \
-  --exclude-dir=scripts \
-  --exclude=LICENSE 2>/dev/null || true)
+  --exclude=LICENSE \
+  --exclude=check-anonymization.sh 2>/dev/null || true)
 
 if [ -n "$HITS" ]; then
   echo "NG: 個人情報・固有名の混入を検出しました。" >&2

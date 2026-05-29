@@ -43,6 +43,16 @@ if (-not (Test-Path $srcClaude)) {
 Write-Host "開発スタイルパックを展開します -> $target"
 New-Item -ItemType Directory -Force -Path $target | Out-Null
 
+# マニフェスト: パックが配置したスキル/フックのパスを記録し、uninstall がそれだけを消す。
+# 既存マニフェストがあれば引き継ぐ（再インストールでスキップされた既配置分を保持）。
+$manifestPath = Join-Path $target '.stylepack-manifest'
+$manifest = New-Object System.Collections.Generic.List[string]
+if (Test-Path $manifestPath) {
+  foreach ($line in Get-Content -Path $manifestPath -Encoding UTF8) {
+    if ($line.Trim()) { [void]$manifest.Add($line.Trim()) }
+  }
+}
+
 function Backup-IfExists([string]$path) {
   if (Test-Path $path) {
     New-Item -ItemType Directory -Force -Path $backupRoot | Out-Null
@@ -99,6 +109,7 @@ foreach ($skill in Get-ChildItem -Path $srcSkills -Directory) {
     Remove-Item -Path $dstSkill -Recurse -Force
   }
   Copy-Item -Path $skill.FullName -Destination $dstSkill -Recurse -Force
+  [void]$manifest.Add("skills/$($skill.Name)")
   Write-Host "  スキル配置: skills/$($skill.Name)"
 }
 
@@ -108,10 +119,16 @@ if (Test-Path $srcHooks) {
   $dstHooks = Join-Path $target 'hooks'
   New-Item -ItemType Directory -Force -Path $dstHooks | Out-Null
   foreach ($h in Get-ChildItem -Path $srcHooks -File) {
-    Copy-Item -Path $h.FullName -Destination (Join-Path $dstHooks $h.Name) -Force
+    $dstHook = Join-Path $dstHooks $h.Name
+    if (Test-Path $dstHook) { Backup-IfExists $dstHook }
+    Copy-Item -Path $h.FullName -Destination $dstHook -Force
+    [void]$manifest.Add("hooks/$($h.Name)")
     Write-Host "  フック配置: hooks/$($h.Name)"
   }
 }
+
+# マニフェストを書き出す（重複排除）
+$manifest | Sort-Object -Unique | Set-Content -Path $manifestPath -Encoding UTF8
 
 Write-Host ""
 Write-Host "完了しました。次の手順:"

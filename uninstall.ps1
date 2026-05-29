@@ -4,7 +4,8 @@
   開発スタイルパックのアンインストール（Windows / PowerShell）。
 
 .DESCRIPTION
-  パックが入れたスキルと起動グリーティングフックを ~/.claude から取り除く。
+  インストール時に記録したマニフェスト（~/.claude/.stylepack-manifest）に載っている
+  ものだけを取り除く。ユーザー自前の同名スキルや手で置いたファイルには触らない。
   既定はドライラン（削除内容の表示のみ）。実際に削除するには -Yes を付ける。
   settings.json と CLAUDE.md は自分で編集している可能性があるため、自動では触らない。
 
@@ -19,33 +20,43 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-$srcRoot   = Split-Path -Parent $MyInvocation.MyCommand.Path
-$srcSkills = Join-Path $srcRoot 'home-claude\skills'
-$target    = Join-Path $env:USERPROFILE '.claude'
+$target       = Join-Path $env:USERPROFILE '.claude'
+$manifestPath = Join-Path $target '.stylepack-manifest'
 
 Write-Host "アンインストール対象: $target"
+
+if (-not (Test-Path $manifestPath)) {
+  Write-Host ""
+  Write-Host "マニフェスト（$manifestPath）が見つかりません。"
+  Write-Host "このパックの導入記録がないため、自動削除は行いません。"
+  Write-Host "手動で確認する場合は $target\skills と $target\hooks\session-greeting.sh を見てください。"
+  exit 0
+}
+
 if (-not $Yes) { Write-Host "(ドライラン。実際に削除するには -Yes を付けて実行)" }
 Write-Host ""
 
-function Remove-Item-IfExists([string]$path, [string]$label) {
-  if (-not (Test-Path $path)) { return }
+$removedAny = $false
+foreach ($rel in Get-Content -Path $manifestPath -Encoding UTF8) {
+  $rel = $rel.Trim()
+  if (-not $rel) { continue }
+  $path = Join-Path $target ($rel -replace '/', '\')
+  if (-not (Test-Path $path)) { continue }
   if ($Yes) {
     Remove-Item -Path $path -Recurse -Force
-    Write-Host "  削除: $label"
+    Write-Host "  削除: $rel"
   } else {
-    Write-Host "  削除予定: $label"
+    Write-Host "  削除予定: $rel"
   }
+  $removedAny = $true
 }
 
-# パックが配布したスキルだけを対象にする
-if (Test-Path $srcSkills) {
-  foreach ($skill in Get-ChildItem -Path $srcSkills -Directory) {
-    Remove-Item-IfExists (Join-Path $target "skills\$($skill.Name)") "skills/$($skill.Name)"
-  }
-}
+if (-not $removedAny) { Write-Host "  （マニフェストに記載の項目は既に存在しません）" }
 
-# 起動グリーティングフック
-Remove-Item-IfExists (Join-Path $target 'hooks\session-greeting.sh') "hooks/session-greeting.sh"
+if ($Yes) {
+  Remove-Item -Path $manifestPath -Force
+  Write-Host "  削除: .stylepack-manifest"
+}
 
 Write-Host ""
 Write-Host "手動で確認してください（自動では触りません）:"
