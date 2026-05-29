@@ -1,2 +1,6 @@
 # シェルスクリプトは LF 固定。CRLF だとフック/インストーラが bad interpreter で壊れる。
 *.sh text eol=lf
+
+# ワークフロー YAML も LF 固定。run: 内の heredoc が CRLF だと壊れる。
+*.yml text eol=lf
+*.yaml text eol=lf
