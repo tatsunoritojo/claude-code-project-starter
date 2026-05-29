@@ -63,7 +63,7 @@ rm -f "$TMP_MD"
 DST_SETTINGS="$TARGET/settings.json"
 if [ -e "$DST_SETTINGS" ] && [ "$FORCE" != "1" ]; then
   cp "$SRC_CLAUDE/settings.json" "$DST_SETTINGS.stylepack"
-  echo "  既存 settings.json を温存。推奨設定は settings.json.stylepack に書き出しました（permissions を手動マージ推奨）"
+  echo "  既存 settings.json を温存。推奨設定は settings.json.stylepack に書き出しました（permissions と hooks を手動マージ推奨。hooks をマージすると起動グリーティングが有効になる）"
 else
   backup_if_exists "$DST_SETTINGS"
   cp "$SRC_CLAUDE/settings.json" "$DST_SETTINGS"

@@ -77,7 +77,7 @@ $srcSettings = Join-Path $srcClaude 'settings.json'
 $dstSettings = Join-Path $target 'settings.json'
 if ((Test-Path $dstSettings) -and -not $Force) {
   Copy-Item -Path $srcSettings -Destination "$dstSettings.stylepack" -Force
-  Write-Host "  既存 settings.json を温存。推奨設定は settings.json.stylepack に書き出しました（permissions を手動マージ推奨）"
+  Write-Host "  既存 settings.json を温存。推奨設定は settings.json.stylepack に書き出しました（permissions と hooks を手動マージ推奨。hooks をマージすると起動グリーティングが有効になる）"
 } else {
   Backup-IfExists $dstSettings
   Copy-Item -Path $srcSettings -Destination $dstSettings -Force

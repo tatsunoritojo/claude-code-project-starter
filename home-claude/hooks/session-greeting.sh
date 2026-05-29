@@ -20,8 +20,11 @@ else
   SKILL_COUNT=0
 fi
 
-# プロフィール状態
-if [ -f "$GLOBAL_MD" ] && grep -q '{{USER_NAME}}' "$GLOBAL_MD" 2>/dev/null; then
+# プロフィール状態（「名前」が埋まっているかをシグナルにする）
+# 壊れた状態（CLAUDE.md 不在など）を誤って「設定済み」に見せないよう、不在時は「不明」に倒す。
+if [ ! -f "$GLOBAL_MD" ]; then
+  PROFILE="不明"
+elif grep -q '{{USER_NAME}}' "$GLOBAL_MD" 2>/dev/null; then
   PROFILE="未設定"
 else
   PROFILE="設定済み"

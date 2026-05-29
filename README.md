@@ -115,9 +115,10 @@ cp -r project-template/CLAUDE.md project-template/docs project-template/.claude 
 
 1. `home-claude/CLAUDE.md` を `~/.claude/CLAUDE.md` にコピー（既存があればマージ）
 2. `home-claude/skills/*` を `~/.claude/skills/` にコピー
-3. `home-claude/settings.json` の permissions を `~/.claude/settings.json` にマージ
-4. `~/.claude/CLAUDE.md` のプロフィールを編集
-5. Claude Code を再起動
+3. `home-claude/hooks/*` を `~/.claude/hooks/` にコピー（`session-greeting.sh` を実行可能にする）
+4. `home-claude/settings.json` の `permissions` と `hooks`（`SessionStart` の起動グリーティング）を `~/.claude/settings.json` にマージ
+5. `~/.claude/CLAUDE.md` のプロフィールを編集
+6. Claude Code を再起動
 
 ## ライセンス
 
