@@ -1,16 +1,14 @@
-<div align="center">
+<h1 align="center">Claude Code 開発スタイルパック</h1>
 
-# Claude Code 開発スタイルパック
+<p align="center"><b>Claude Code を、いきなり「気の利く相棒」にする設定パック</b></p>
 
-**Claude Code を、いきなり「気の利く相棒」にする設定パック**
+<p align="center">経験のある開発者が Claude Code に仕込んでいる「働き方のルール」一式を、<br>そのまま自分の環境にコピーできます。</p>
 
-経験のある開発者が Claude Code に仕込んでいる「働き方のルール」一式を、<br>そのまま自分の環境にコピーできます。
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
-![Setup](https://img.shields.io/badge/setup-3%20steps-brightgreen)
-
-</div>
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey" alt="Platform">
+  <img src="https://img.shields.io/badge/setup-3%20steps-brightgreen" alt="Setup">
+</p>
 
 ---
 
@@ -20,7 +18,7 @@
 
 | 場面 | パック導入前 | パック導入後 |
 |---|---|---|
-| 本番反映・ファイル削除・強制 push | そのまま実行されることがある | **必ず一言確認してから**進める |
+| 本番反映・ファイル削除・強制 push（履歴の上書き） | そのまま実行されることがある | **必ず一言確認してから**進める |
 | 調べもの・テスト実行・コード読み | 都度許可を求めて止まりがち | いちいち聞かず**サッと自走** |
 | 回答の根拠 | 「たぶんこう」で答えることも | **コードや公式ドキュメントを確認**してから答える |
 | 完了の報告 | 「動くはず」で終わりがち | **ビルド・テストを確かめて**から完了 |
@@ -66,7 +64,9 @@ USER_NAME="山田太郎" USER_ROLE="バックエンドエンジニア" bash inst
 ```
 
 > [!IMPORTANT]
-> スクリプトは**今ある設定を勝手に上書きしません**。すでに設定がある場合は、新しい内容を `〜.stylepack` という別ファイルに書き出すので、見比べてから取り込めます。
+> スクリプトは**今ある設定を勝手に上書きしません**。
+> - `CLAUDE.md` と `settings.json` がすでにある場合は、新しい内容を `〜.stylepack` という別ファイルに書き出すので、見比べてから取り込めます。
+> - 同じ名前のスキルがすでにある場合は、上書きせずスキップします（`-Force` を付けたときだけ、バックアップを取ってから入れ替え）。
 
 ### 3. Claude Code を再起動
 
@@ -103,7 +103,7 @@ USER_NAME="山田太郎" USER_ROLE="バックエンドエンジニア" bash inst
 | `doc-init` | プロジェクトの説明ファイルを整える |
 | `incident-response` | 本番障害のとき、復旧と原因究明を並行で進める |
 | `db-audit` | データベース設計をレビューする |
-| `database-migration-review` | DB のスキーマ変更を安全に行う設計をレビュー |
+| `database-migration-review` | DB のスキーマ変更（テーブル構造の変更）を安全に行う設計をレビュー |
 | `search-first` | 自作で書き始める前に、既存コードや一次情報を調べる |
 | `strategic-compact` | 長い会話を整理するタイミングを判断する |
 | `mermaid-sequence-diagram` | 処理の流れを図（シーケンス図）にする |
@@ -123,10 +123,18 @@ USER_NAME="山田太郎" USER_ROLE="バックエンドエンジニア" bash inst
 
 ### 新しいプロジェクトでひな型を使う
 
-新しいプロジェクトを始めるときは、`project-template/` の中身をプロジェクトのフォルダにコピーします。
+新しいプロジェクトを始めるときは、`project-template/` の中身をプロジェクトのフォルダにコピーします（エクスプローラーやFinderで手作業でコピーしても構いません）。
+
+**macOS / Linux**
 
 ```bash
 cp -r project-template/CLAUDE.md project-template/docs project-template/.claude /path/to/your-project/
+```
+
+**Windows（PowerShell）**
+
+```powershell
+Copy-Item -Recurse project-template\CLAUDE.md, project-template\docs, project-template\.claude C:\path\to\your-project\
 ```
 
 コピーした `CLAUDE.md` と `docs/01-overview.md` の `{{ }}` の部分を埋めれば、そのプロジェクトの説明が整います。
