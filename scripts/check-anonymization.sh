@@ -21,7 +21,9 @@ ROOT="$(pwd)"
 #   - 個人ホームパス（`C:\Users\tatsu` / `C:/Users/tatsu`）と `C:\ideas` は厳密一致させる
 #     （GitHub ユーザー名はリポジトリの公開アドレスそのものなので、`tatsu` 単体では検出しない）。
 #   - 汎用の `ideas/` ディレクトリ機能は誤検出しない。
-PATTERN='東城|立憲|Tatsunori|Tojo|onedrop|Shifree|シフリー|きろくる|Eumenes|広島大学|フクスケ|SharePoint|secretary|business-docs|career-master|shift-scheduler|attendance-desktop|correspondence-school|adapted by tojo|C:\\Users\\tatsu|C:/Users/tatsu|C:\\ideas'
+#   - 辞書語（SharePoint / secretary 等）はドキュメント本文で正当に登場し誤検出を招くため
+#     トークンに含めない。個人運用の実体（secretary ディレクトリ等）は個人ホームパスで捕捉する。
+PATTERN='東城|立憲|Tatsunori|Tojo|onedrop|Shifree|シフリー|きろくる|Eumenes|広島大学|フクスケ|business-docs|career-master|shift-scheduler|attendance-desktop|correspondence-school|adapted by tojo|C:\\Users\\tatsu|C:/Users/tatsu|C:\\ideas'
 
 HITS=$(grep -rInE "$PATTERN" "$ROOT" \
   --exclude-dir=.git \

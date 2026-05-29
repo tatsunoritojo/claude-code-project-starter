@@ -6,7 +6,7 @@ Claude Code をペアプログラマーとして運用するためのグロー�
 - 現在地: ピン留め公開ショーケースとして仕上げ完了。CI(Linux+Windows)・匿名化チェックスクリプト・アンインストール(マニフェスト方式)・README強化(バッジ/使用イメージ/FAQ)を追加し master へマージ。CI は master で緑。リポジトリ説明文・トピックも設定済み。Codex レビューを2巡（README系・自動化系）反映
 - 次アクション: 別マシン/別ユーザーで install を実走させ体感確認。フィードバックがあれば反映
 - 参照ファイル: `home-claude/CLAUDE.md`(スタイル本体), `home-claude/hooks/session-greeting.sh`, `install.ps1`/`install.sh`, `uninstall.*`, `scripts/check-anonymization.sh`, `.github/workflows/ci.yml`, `README.md`
-- 未解決 / 別扱い: (1)グローバルから除外した個人色の強い要素（秘書/教材/3者協働）を汎用版で復活させるか未検討。(2)SessionStart の matcher 明示（startup 限定）は値の確証が取れたら追加検討。(3)インストーラに settings.json 自動マージ機能を持たせるかは別途。(4)匿名化スキャンの一般語トークン(SharePoint/secretary)は将来誤検出が出たら複合語化を検討
+- 未解決 / 別扱い: (1)グローバルから除外した個人色の強い要素（秘書/教材/3者協働）を汎用版で復活させるか未検討。(2)SessionStart の matcher 明示（startup 限定）は値の確証が取れたら追加検討。(3)インストーラに settings.json 自動マージ機能を持たせるかは別途。(4)匿名化スキャンのトークンは辞書語による誤検出を避け、固有名・個人パス中心に整理済み
 - 最終更新: 2026-05-30
 
 ## このリポジトリの構成
