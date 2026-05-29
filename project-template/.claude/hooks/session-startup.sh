@@ -2,10 +2,11 @@
 #
 # セッション起動フック
 # Claude Code セッション開始時に、このプロジェクトの初動文脈を提示する。
-# スタック非依存（package.json / pyproject.toml / go.mod などを自動検出）。
+# git 状態・必須ドキュメントの有無・依存未インストールを確認する。
 #
 
-DIR="$CLAUDE_PROJECT_DIR"
+# Claude Code 経由では CLAUDE_PROJECT_DIR が渡される。単体実行時は cwd を使う。
+DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 
 echo ""
 echo "=== $(basename "$DIR") ==="

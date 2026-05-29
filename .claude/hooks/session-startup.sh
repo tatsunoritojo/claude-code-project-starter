@@ -3,7 +3,7 @@
 # セッション起動フック（このリポジトリ用）
 #
 
-DIR="$CLAUDE_PROJECT_DIR"
+DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 
 echo ""
 echo "=== Claude Code 開発スタイルパック ==="

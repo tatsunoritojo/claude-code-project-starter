@@ -38,12 +38,16 @@ backup_if_exists() {
 # --- CLAUDE.md ---
 DST_MD="$TARGET/CLAUDE.md"
 TMP_MD="$(mktemp)"
+trap 'rm -f "$TMP_MD" "$TMP_MD.bak"' EXIT
 cp "$SRC_CLAUDE/CLAUDE.md" "$TMP_MD"
+
+# sed の置換文字列に含まれる特殊文字(/ & \)をエスケープしてから流し込む
+sed_escape() { printf '%s' "$1" | sed -e 's/[\/&\\]/\\&/g'; }
 if [ -n "${USER_NAME:-}" ]; then
-  sed -i.bak "s/{{USER_NAME}}/${USER_NAME}/g" "$TMP_MD" && rm -f "$TMP_MD.bak"
+  sed -i.bak "s/{{USER_NAME}}/$(sed_escape "$USER_NAME")/g" "$TMP_MD" && rm -f "$TMP_MD.bak"
 fi
 if [ -n "${USER_ROLE:-}" ]; then
-  sed -i.bak "s/{{USER_ROLE}}/${USER_ROLE}/g" "$TMP_MD" && rm -f "$TMP_MD.bak"
+  sed -i.bak "s/{{USER_ROLE}}/$(sed_escape "$USER_ROLE")/g" "$TMP_MD" && rm -f "$TMP_MD.bak"
 fi
 if [ -e "$DST_MD" ] && [ "$FORCE" != "1" ]; then
   cp "$TMP_MD" "$DST_MD.stylepack"
@@ -80,7 +84,7 @@ for skill in "$SRC_CLAUDE/skills"/*/; do
     backup_if_exists "$dst"
     rm -rf "$dst"
   fi
-  cp -R "$skill" "$dst"
+  cp -R "${skill%/}" "$dst"
   echo "  スキル配置: skills/$name"
 done
 

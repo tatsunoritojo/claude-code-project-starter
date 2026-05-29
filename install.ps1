@@ -53,19 +53,22 @@ function Backup-IfExists([string]$path) {
 }
 
 # --- CLAUDE.md ---
+# UTF-8(BOMなし)で読み書きする。Windows PowerShell 5.1 は既定が ANSI のため、
+# Get-Content/Set-Content の既定だと日本語が文字化けする。.NET 経由で明示する。
+$utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 $srcMd = Join-Path $srcClaude 'CLAUDE.md'
 $dstMd = Join-Path $target 'CLAUDE.md'
-$content = Get-Content $srcMd -Raw
+$content = [System.IO.File]::ReadAllText($srcMd, [System.Text.Encoding]::UTF8)
 if ($UserName) { $content = $content.Replace('{{USER_NAME}}', $UserName) }
 if ($UserRole) { $content = $content.Replace('{{USER_ROLE}}', $UserRole) }
 
 if ((Test-Path $dstMd) -and -not $Force) {
   $side = "$dstMd.stylepack"
-  Set-Content -Path $side -Value $content -Encoding UTF8
+  [System.IO.File]::WriteAllText($side, $content, $utf8NoBom)
   Write-Host "  既存 CLAUDE.md を温存。新ルールは $side に書き出しました（手動マージするか -Force で上書き）"
 } else {
   Backup-IfExists $dstMd
-  Set-Content -Path $dstMd -Value $content -Encoding UTF8
+  [System.IO.File]::WriteAllText($dstMd, $content, $utf8NoBom)
   Write-Host "  CLAUDE.md を配置しました"
 }
 
