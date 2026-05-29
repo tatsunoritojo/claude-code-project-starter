@@ -14,7 +14,8 @@ claude-code-project-starter/
 ├── home-claude/                 # → ~/.claude/ に展開される中身
 │   ├── CLAUDE.md                # 全セッション共通のグローバルルール（スタイル本体）
 │   ├── settings.json            # 安全な読み取り系コマンドを既定許可
-│   └── skills/                  # 汎用スキル14個
+│   ├── skills/                  # 汎用スキル14個
+│   └── hooks/                   # オプションのフック（既定では無効）
 └── project-template/            # → 新規プロジェクトのルートへコピーして使う雛形
     ├── CLAUDE.md                # プロジェクト用 CLAUDE.md（穴埋め式）
     ├── docs/01-overview.md      # 1ページ概要テンプレ
@@ -79,6 +80,34 @@ FORCE=1 bash install.sh
 - スキルは同名が既存ならスキップ（`-Force` で上書き、バックアップあり）
 
 インストール後、`~/.claude/CLAUDE.md` の「ユーザープロフィール」にあるプレースホルダを自分の情報に書き換える。インストーラが自動で埋めるのは `{{USER_NAME}}` と `{{USER_ROLE}}` の2つだけ（引数を渡した場合）。`{{USER_BACKGROUND}}` と `{{USER_DEV_STYLE}}` は手動で編集する。
+
+## 初回起動の挙動
+
+プロフィールのプレースホルダ（`{{USER_NAME}}` 等）が残ったまま Claude Code を起動すると、グローバル CLAUDE.md の「起動時セルフチェック」により、Claude が**未セットアップと判断して初回セットアップを能動的に提案**する。プロフィール4項目を尋ねて `~/.claude/CLAUDE.md` を埋め、利用可能なスキルを一覧で確認する。プレースホルダが埋まれば、このセルフチェックは二度と発火しない（自己沈黙）。
+
+具体的な依頼を伴って起動した場合は、その依頼が優先され、セットアップは1行の提案に留まる。
+
+### オプション: 初回起動フック
+
+CLAUDE.md のセルフチェックに加えて、起動時に**決定的なバナー**でセットアップ未完了を知らせたい場合は、同梱のフックを有効化できる（既定では無効）。POSIX シェルが必要（macOS / Linux、Windows は Git Bash 等）。
+
+`~/.claude/settings.json` に次を追加（既存の `hooks` があればマージ）:
+
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "\"$HOME\"/.claude/hooks/first-run-check.sh" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+フック本体は `~/.claude/hooks/first-run-check.sh`（インストーラが配置済み）。プロフィールが埋まっていれば何も出力しない。
 
 ## 新規プロジェクトでの雛形の使い方
 

@@ -88,6 +88,19 @@ for skill in "$SRC_CLAUDE/skills"/*/; do
   echo "  スキル配置: skills/$name"
 done
 
+# --- hooks（オプション。既定では settings に紐付けない。README で opt-in） ---
+SRC_HOOKS="$SRC_CLAUDE/hooks"
+if [ -d "$SRC_HOOKS" ]; then
+  DST_HOOKS="$TARGET/hooks"
+  mkdir -p "$DST_HOOKS"
+  for h in "$SRC_HOOKS"/*; do
+    [ -f "$h" ] || continue
+    cp "$h" "$DST_HOOKS/"
+    chmod +x "$DST_HOOKS/$(basename "$h")"
+    echo "  フック配置（オプション・既定無効）: hooks/$(basename "$h")"
+  done
+fi
+
 echo ""
 echo "完了しました。次の手順:"
 echo "  1. ~/.claude/CLAUDE.md の「ユーザープロフィール」のプレースホルダ（{{USER_NAME}} 等）を自分の情報に書き換える"

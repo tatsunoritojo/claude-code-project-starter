@@ -102,6 +102,17 @@ foreach ($skill in Get-ChildItem -Path $srcSkills -Directory) {
   Write-Host "  スキル配置: skills/$($skill.Name)"
 }
 
+# --- hooks（オプション。既定では settings に紐付けない。README で opt-in） ---
+$srcHooks = Join-Path $srcClaude 'hooks'
+if (Test-Path $srcHooks) {
+  $dstHooks = Join-Path $target 'hooks'
+  New-Item -ItemType Directory -Force -Path $dstHooks | Out-Null
+  foreach ($h in Get-ChildItem -Path $srcHooks -File) {
+    Copy-Item -Path $h.FullName -Destination (Join-Path $dstHooks $h.Name) -Force
+    Write-Host "  フック配置（オプション・既定無効）: hooks/$($h.Name)"
+  }
+}
+
 Write-Host ""
 Write-Host "完了しました。次の手順:"
 Write-Host "  1. ~/.claude/CLAUDE.md の「ユーザープロフィール」のプレースホルダ（{{USER_NAME}} 等）を自分の情報に書き換える"
