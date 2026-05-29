@@ -15,7 +15,7 @@ claude-code-project-starter/
 │   ├── CLAUDE.md                # 全セッション共通のグローバルルール（スタイル本体）
 │   ├── settings.json            # 安全な読み取り系コマンドを既定許可
 │   ├── skills/                  # 汎用スキル14個
-│   └── hooks/                   # オプションのフック（既定では無効）
+│   └── hooks/                   # 起動グリーティングフック（settings.json 経由で既定有効）
 └── project-template/            # → 新規プロジェクトのルートへコピーして使う雛形
     ├── CLAUDE.md                # プロジェクト用 CLAUDE.md（穴埋め式）
     ├── docs/01-overview.md      # 1ページ概要テンプレ
@@ -87,27 +87,19 @@ FORCE=1 bash install.sh
 
 具体的な依頼を伴って起動した場合は、その依頼が優先され、セットアップは1行の提案に留まる。
 
-### オプション: 初回起動フック
+### 起動グリーティング（既定で有効）
 
-CLAUDE.md のセルフチェックに加えて、起動時に**決定的なバナー**でセットアップ未完了を知らせたい場合は、同梱のフックを有効化できる（既定では無効）。POSIX シェルが必要（macOS / Linux、Windows は Git Bash 等）。
+パックが効いているかを毎セッション一目で判断できるよう、起動時に状態を1行で表示する（`home-claude/settings.json` の SessionStart で既定有効）:
 
-`~/.claude/settings.json` に次を追加（既存の `hooks` があればマージ）:
-
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          { "type": "command", "command": "\"$HOME\"/.claude/hooks/first-run-check.sh" }
-        ]
-      }
-    ]
-  }
-}
+```
+[開発スタイルパック] 有効 ｜ skills: 14 ｜ profile: 設定済み
 ```
 
-フック本体は `~/.claude/hooks/first-run-check.sh`（インストーラが配置済み）。プロフィールが埋まっていれば何も出力しない。
+プロフィール未設定（プレースホルダが残っている）の場合は、下に初回セットアップ案内を追記する。フック本体は `~/.claude/hooks/session-greeting.sh`。
+
+**無効化**するには `~/.claude/settings.json` の `hooks.SessionStart` から `session-greeting.sh` の登録を外す。
+
+注意: フックの実行には POSIX シェルが必要（macOS / Linux、Windows は Claude Code が用いるシェル）。シェルが使えない環境では、グリーティングは表示されないが他の機能（グローバルルール・スキル）は問題なく動作する。なお、既存の `~/.claude/settings.json` がある環境ではインストーラは設定を上書きしないため、グリーティングを有効にするには `settings.json.stylepack` の `hooks` ブロックを手動でマージする。
 
 ## 新規プロジェクトでの雛形の使い方
 

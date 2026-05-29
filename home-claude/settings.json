@@ -1,5 +1,5 @@
 {
-  "$comment": "グローバル settings。~/.claude/settings.json として配置される。安全な読み取り系コマンドを既定で許可。プロジェクト固有の許可は各プロジェクトの .claude/settings.json に書く。",
+  "$comment": "グローバル settings。~/.claude/settings.json として配置される。安全な読み取り系コマンドを既定で許可。SessionStart でパックの有効状態を表示する（無効化するには SessionStart ブロックを削除）。プロジェクト固有の許可は各プロジェクトの .claude/settings.json に書く。",
   "permissions": {
     "allow": [
       "Bash(git status:*)",
@@ -12,6 +12,18 @@
       "Bash(rg:*)",
       "Bash(gh pr view:*)",
       "Bash(gh pr list:*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$HOME\"/.claude/hooks/session-greeting.sh"
+          }
+        ]
+      }
     ]
   }
 }

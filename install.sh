@@ -88,7 +88,7 @@ for skill in "$SRC_CLAUDE/skills"/*/; do
   echo "  スキル配置: skills/$name"
 done
 
-# --- hooks（オプション。既定では settings に紐付けない。README で opt-in） ---
+# --- hooks（session-greeting は settings.json 経由で既定有効。無効化は README 参照） ---
 SRC_HOOKS="$SRC_CLAUDE/hooks"
 if [ -d "$SRC_HOOKS" ]; then
   DST_HOOKS="$TARGET/hooks"
@@ -97,7 +97,7 @@ if [ -d "$SRC_HOOKS" ]; then
     [ -f "$h" ] || continue
     cp "$h" "$DST_HOOKS/"
     chmod +x "$DST_HOOKS/$(basename "$h")"
-    echo "  フック配置（オプション・既定無効）: hooks/$(basename "$h")"
+    echo "  フック配置: hooks/$(basename "$h")"
   done
 fi
 
