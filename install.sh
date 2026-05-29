@@ -26,6 +26,12 @@ fi
 echo "開発スタイルパックを展開します -> $TARGET"
 mkdir -p "$TARGET"
 
+# マニフェスト: パックが配置したスキル/フックのパスを記録し、uninstall がそれだけを消す。
+# 既存マニフェストがあれば引き継ぐ（再インストールでスキップされた既配置分を保持）。
+MANIFEST="$TARGET/.stylepack-manifest"
+TMP_MAN="$(mktemp)"
+[ -f "$MANIFEST" ] && cat "$MANIFEST" >> "$TMP_MAN"
+
 backup_if_exists() {
   local path="$1"
   if [ -e "$path" ]; then
@@ -38,7 +44,7 @@ backup_if_exists() {
 # --- CLAUDE.md ---
 DST_MD="$TARGET/CLAUDE.md"
 TMP_MD="$(mktemp)"
-trap 'rm -f "$TMP_MD" "$TMP_MD.bak"' EXIT
+trap 'rm -f "$TMP_MD" "$TMP_MD.bak" "$TMP_MAN"' EXIT
 cp "$SRC_CLAUDE/CLAUDE.md" "$TMP_MD"
 
 # sed の置換文字列に含まれる特殊文字(/ & \)をエスケープしてから流し込む
@@ -85,6 +91,7 @@ for skill in "$SRC_CLAUDE/skills"/*/; do
     rm -rf "$dst"
   fi
   cp -R "${skill%/}" "$dst"
+  echo "skills/$name" >> "$TMP_MAN"
   echo "  スキル配置: skills/$name"
 done
 
@@ -95,15 +102,24 @@ if [ -d "$SRC_HOOKS" ]; then
   mkdir -p "$DST_HOOKS"
   for h in "$SRC_HOOKS"/*; do
     [ -f "$h" ] || continue
-    cp "$h" "$DST_HOOKS/"
-    chmod +x "$DST_HOOKS/$(basename "$h")"
-    echo "  フック配置: hooks/$(basename "$h")"
+    name="$(basename "$h")"
+    [ -e "$DST_HOOKS/$name" ] && backup_if_exists "$DST_HOOKS/$name"
+    cp "$h" "$DST_HOOKS/$name"
+    chmod +x "$DST_HOOKS/$name"
+    echo "hooks/$name" >> "$TMP_MAN"
+    echo "  フック配置: hooks/$name"
   done
 fi
+
+# マニフェストを書き出す（重複排除）
+sort -u "$TMP_MAN" > "$MANIFEST"
 
 echo ""
 echo "完了しました。次の手順:"
 echo "  1. ~/.claude/CLAUDE.md の「ユーザープロフィール」のプレースホルダ（{{USER_NAME}} 等）を自分の情報に書き換える"
 echo "  2. Claude Code を再起動して設定を読み込む"
 echo "  3. 'What Skills are available?' で同梱スキルの読み込みを確認する"
-[ -d "$BACKUP_ROOT" ] && echo "  （上書きしたファイルのバックアップ: $BACKUP_ROOT）"
+if [ -d "$BACKUP_ROOT" ]; then
+  echo "  （上書きしたファイルのバックアップ: $BACKUP_ROOT）"
+fi
+exit 0

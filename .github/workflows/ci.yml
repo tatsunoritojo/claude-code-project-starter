@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: settings.json が妥当な JSON か
+        run: |
+          python3 -c "import json; [json.load(open(f, encoding='utf-8')) for f in ['home-claude/settings.json','project-template/.claude/settings.json']]; print('JSON OK')"
+
+      - name: 各スキルの SKILL.md に frontmatter(name/description)があるか
+        run: |
+          python3 - <<'PY'
+          import glob, sys
+          files = sorted(glob.glob('home-claude/skills/*/SKILL.md'))
+          bad = []
+          for f in files:
+              t = open(f, encoding='utf-8').read()
+              if not t.lstrip().startswith('---'):
+                  bad.append((f, 'frontmatter なし')); continue
+              fm = t.split('---', 2)[1]
+              for key in ('name:', 'description:'):
+                  if key not in fm:
+                      bad.append((f, f'{key} なし'))
+          if bad:
+              for f, r in bad:
+                  print('NG', f, r)
+              sys.exit(1)
+          print(f'SKILL frontmatter OK ({len(files)} skills)')
+          PY
+
+      - name: シェルスクリプトの shellcheck(致命的エラーのみ)
+        run: |
+          shellcheck -S error install.sh scripts/*.sh home-claude/hooks/*.sh project-template/.claude/hooks/*.sh
+
+      - name: install / uninstall をサンドボックス実行
+        run: |
+          HOME_DIR="$(mktemp -d)"
+          # インストール
+          HOME="$HOME_DIR" bash install.sh
+          count="$(find "$HOME_DIR/.claude/skills" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')"
+          echo "skills: $count"
+          test "$count" -eq 14
+          HOME="$HOME_DIR" bash "$HOME_DIR/.claude/hooks/session-greeting.sh" | grep -q "開発スタイルパック"
+          test -f "$HOME_DIR/.claude/.stylepack-manifest"
+          # アンインストール: ドライランでは消えない
+          HOME="$HOME_DIR" bash uninstall.sh >/dev/null
+          test "$(find "$HOME_DIR/.claude/skills" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')" -eq 14
+          # アンインストール: 実行すると配置物だけ消える
+          HOME="$HOME_DIR" YES=1 bash uninstall.sh >/dev/null
+          test "$(find "$HOME_DIR/.claude/skills" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')" -eq 0
+          test ! -f "$HOME_DIR/.claude/hooks/session-greeting.sh"
+          echo "install / uninstall サンドボックス OK"
+
+      - name: 匿名化スキャン(個人情報の混入チェック)
+        run: bash scripts/check-anonymization.sh
+
+  validate-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install.ps1 / uninstall.ps1 をサンドボックス実行(PowerShell)
+        shell: pwsh
+        run: |
+          $fake = Join-Path $env:RUNNER_TEMP 'fakehome'
+          New-Item -ItemType Directory -Force -Path $fake | Out-Null
+          $env:USERPROFILE = $fake
+          .\install.ps1
+          $count = (Get-ChildItem (Join-Path $fake '.claude\skills') -Directory).Count
+          if ($count -ne 14) { throw "skills=$count (expected 14)" }
+          # 日本語が文字化けしていないこと(UTF-8 読み書きの担保)
+          $first = Get-Content (Join-Path $fake '.claude\CLAUDE.md') -TotalCount 1
+          if ($first -notmatch 'グローバル指示書') { throw "CLAUDE.md mojibake? first line: $first" }
+          if (-not (Test-Path (Join-Path $fake '.claude\.stylepack-manifest'))) { throw 'manifest なし' }
+          .\uninstall.ps1 -Yes
+          $count2 = (Get-ChildItem (Join-Path $fake '.claude\skills') -Directory -ErrorAction SilentlyContinue).Count
+          if ($count2 -ne 0) { throw "uninstall 後 skills=$count2 (expected 0)" }
+          Write-Host 'Windows install / uninstall サンドボックス OK'
