@@ -14,7 +14,7 @@
   {{USER_ROLE}} を埋める。省略可。
 
 .PARAMETER Force
-  既存の CLAUDE.md / settings.json / 同名スキルを、バックアップを取った上で上書きする。
+  既存の CLAUDE.md / settings.json / 同名スキル・フックを、バックアップを取った上で上書きする。
 
 .EXAMPLE
   .\install.ps1
@@ -120,15 +120,21 @@ if (Test-Path $srcHooks) {
   New-Item -ItemType Directory -Force -Path $dstHooks | Out-Null
   foreach ($h in Get-ChildItem -Path $srcHooks -File) {
     $dstHook = Join-Path $dstHooks $h.Name
+    $rel = "hooks/$($h.Name)"
+    if ((Test-Path $dstHook) -and -not $Force) {
+      Write-Host "  スキップ（既存）: $rel  ※上書きするには -Force"
+      continue
+    }
     if (Test-Path $dstHook) { Backup-IfExists $dstHook }
     Copy-Item -Path $h.FullName -Destination $dstHook -Force
-    [void]$manifest.Add("hooks/$($h.Name)")
-    Write-Host "  フック配置: hooks/$($h.Name)"
+    [void]$manifest.Add($rel)
+    Write-Host "  フック配置: $rel"
   }
 }
 
 # マニフェストを書き出す（重複排除）
-$manifest | Sort-Object -Unique | Set-Content -Path $manifestPath -Encoding UTF8
+$manifestLines = [string[]]($manifest | Sort-Object -Unique)
+[System.IO.File]::WriteAllLines($manifestPath, $manifestLines, $utf8NoBom)
 
 Write-Host ""
 Write-Host "完了しました。次の手順:"

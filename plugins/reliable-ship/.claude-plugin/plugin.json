@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "reliable-ship",
+  "displayName": "Reliable Ship",
+  "version": "1.0.0",
+  "description": "A reviewable AI coding workflow: frame the change, verify the evidence, brief an independent reviewer, and leave the merge decision to a human.",
+  "author": {
+    "name": "tatsunoritojo",
+    "url": "https://github.com/tatsunoritojo"
+  },
+  "homepage": "https://github.com/tatsunoritojo/claude-code-project-starter",
+  "repository": "https://github.com/tatsunoritojo/claude-code-project-starter",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "ai-development",
+    "code-review",
+    "human-in-the-loop"
+  ]
+}

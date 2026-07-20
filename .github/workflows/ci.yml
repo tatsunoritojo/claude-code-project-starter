@@ -13,6 +13,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Reliable Ship の公開パッケージ構造を検証
+        run: python3 scripts/validate-repository.py
+
       - name: settings.json が妥当な JSON か
         run: |
           python3 -c "import json; [json.load(open(f, encoding='utf-8')) for f in ['home-claude/settings.json','project-template/.claude/settings.json']]; print('JSON OK')"
@@ -40,7 +43,7 @@ jobs:
 
       - name: シェルスクリプトの shellcheck(致命的エラーのみ)
         run: |
-          shellcheck -S error install.sh scripts/*.sh home-claude/hooks/*.sh project-template/.claude/hooks/*.sh
+          shellcheck -S error install.sh uninstall.sh scripts/*.sh home-claude/hooks/*.sh project-template/.claude/hooks/*.sh
 
       - name: install / uninstall をサンドボックス実行
         run: |
@@ -60,6 +63,46 @@ jobs:
           test "$(find "$HOME_DIR/.claude/skills" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l | tr -d ' ')" -eq 0
           test ! -f "$HOME_DIR/.claude/hooks/session-greeting.sh"
           echo "install / uninstall サンドボックス OK"
+
+      - name: 既存設定・スキル・フックを上書きしない
+        run: |
+          HOME_DIR="$(mktemp -d)"
+          ORIGINALS="$(mktemp -d)"
+          mkdir -p "$HOME_DIR/.claude/skills/search-first" "$HOME_DIR/.claude/hooks"
+          printf '%s\n' '# user CLAUDE.md' > "$HOME_DIR/.claude/CLAUDE.md"
+          printf '%s\n' '{"userSetting": true}' > "$HOME_DIR/.claude/settings.json"
+          printf '%s\n' '# user search-first skill' > "$HOME_DIR/.claude/skills/search-first/SKILL.md"
+          printf '%s\n' '#!/bin/sh' 'echo user-hook' > "$HOME_DIR/.claude/hooks/session-greeting.sh"
+          cp -R "$HOME_DIR/.claude/." "$ORIGINALS/"
+
+          HOME="$HOME_DIR" bash install.sh
+
+          cmp "$ORIGINALS/CLAUDE.md" "$HOME_DIR/.claude/CLAUDE.md"
+          cmp "$ORIGINALS/settings.json" "$HOME_DIR/.claude/settings.json"
+          cmp "$ORIGINALS/skills/search-first/SKILL.md" "$HOME_DIR/.claude/skills/search-first/SKILL.md"
+          cmp "$ORIGINALS/hooks/session-greeting.sh" "$HOME_DIR/.claude/hooks/session-greeting.sh"
+          test -f "$HOME_DIR/.claude/CLAUDE.md.stylepack"
+          test -f "$HOME_DIR/.claude/settings.json.stylepack"
+          ! grep -Fqx 'skills/search-first' "$HOME_DIR/.claude/.stylepack-manifest"
+          ! grep -Fqx 'hooks/session-greeting.sh' "$HOME_DIR/.claude/.stylepack-manifest"
+          test "$(find "$HOME_DIR/.claude/skills" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')" -eq 14
+
+          HOME="$HOME_DIR" YES=1 bash uninstall.sh >/dev/null
+
+          test "$(find "$HOME_DIR/.claude/skills" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')" -eq 1
+          cmp "$ORIGINALS/CLAUDE.md" "$HOME_DIR/.claude/CLAUDE.md"
+          cmp "$ORIGINALS/settings.json" "$HOME_DIR/.claude/settings.json"
+          cmp "$ORIGINALS/skills/search-first/SKILL.md" "$HOME_DIR/.claude/skills/search-first/SKILL.md"
+          cmp "$ORIGINALS/hooks/session-greeting.sh" "$HOME_DIR/.claude/hooks/session-greeting.sh"
+
+          printf '%s\n' '../outside' > "$HOME_DIR/.claude/.stylepack-manifest"
+          printf '%s\n' 'keep' > "$HOME_DIR/outside"
+          if HOME="$HOME_DIR" YES=1 bash uninstall.sh >/dev/null 2>&1; then
+            echo "不正manifestが拒否されませんでした" >&2
+            exit 1
+          fi
+          grep -Fqx 'keep' "$HOME_DIR/outside"
+          echo "既存ファイル温存 OK"
 
       - name: 匿名化スキャン(個人情報の混入チェック)
         run: bash scripts/check-anonymization.sh
@@ -86,3 +129,51 @@ jobs:
           $count2 = (Get-ChildItem (Join-Path $fake '.claude\skills') -Directory -ErrorAction SilentlyContinue).Count
           if ($count2 -ne 0) { throw "uninstall 後 skills=$count2 (expected 0)" }
           Write-Host 'Windows install / uninstall サンドボックス OK'
+
+      - name: 既存設定・スキル・フックを上書きしない(PowerShell)
+        shell: pwsh
+        run: |
+          $fake = Join-Path $env:RUNNER_TEMP 'existing-home'
+          $claude = Join-Path $fake '.claude'
+          New-Item -ItemType Directory -Force -Path (Join-Path $claude 'skills\search-first'), (Join-Path $claude 'hooks') | Out-Null
+          [System.IO.File]::WriteAllText((Join-Path $claude 'CLAUDE.md'), '# user CLAUDE.md')
+          [System.IO.File]::WriteAllText((Join-Path $claude 'settings.json'), '{"userSetting":true}')
+          [System.IO.File]::WriteAllText((Join-Path $claude 'skills\search-first\SKILL.md'), '# user search-first skill')
+          [System.IO.File]::WriteAllText((Join-Path $claude 'hooks\session-greeting.sh'), "#!/bin/sh`necho user-hook")
+          $before = @{}
+          foreach ($rel in 'CLAUDE.md', 'settings.json', 'skills\search-first\SKILL.md', 'hooks\session-greeting.sh') {
+            $before[$rel] = (Get-FileHash (Join-Path $claude $rel) -Algorithm SHA256).Hash
+          }
+
+          $env:USERPROFILE = $fake
+          .\install.ps1
+
+          foreach ($rel in $before.Keys) {
+            $after = (Get-FileHash (Join-Path $claude $rel) -Algorithm SHA256).Hash
+            if ($after -ne $before[$rel]) { throw "既存ファイルが変化: $rel" }
+          }
+          if (-not (Test-Path (Join-Path $claude 'CLAUDE.md.stylepack'))) { throw 'CLAUDE.md.stylepack なし' }
+          if (-not (Test-Path (Join-Path $claude 'settings.json.stylepack'))) { throw 'settings.json.stylepack なし' }
+          $manifest = Get-Content (Join-Path $claude '.stylepack-manifest') -Encoding UTF8
+          if ($manifest -contains 'skills/search-first') { throw '既存skillがmanifestに入った' }
+          if ($manifest -contains 'hooks/session-greeting.sh') { throw '既存hookがmanifestに入った' }
+          $count = (Get-ChildItem (Join-Path $claude 'skills') -Directory).Count
+          if ($count -ne 14) { throw "skills=$count (expected 14)" }
+
+          .\uninstall.ps1 -Yes
+
+          $count2 = (Get-ChildItem (Join-Path $claude 'skills') -Directory -ErrorAction SilentlyContinue).Count
+          if ($count2 -ne 1) { throw "uninstall 後 skills=$count2 (expected 1)" }
+          foreach ($rel in $before.Keys) {
+            $after = (Get-FileHash (Join-Path $claude $rel) -Algorithm SHA256).Hash
+            if ($after -ne $before[$rel]) { throw "uninstall後に既存ファイルが変化: $rel" }
+          }
+
+          [System.IO.File]::WriteAllText((Join-Path $claude '.stylepack-manifest'), '../outside')
+          $outside = Join-Path $fake 'outside'
+          [System.IO.File]::WriteAllText($outside, 'keep')
+          $rejected = $false
+          try { .\uninstall.ps1 -Yes } catch { $rejected = $true }
+          if (-not $rejected) { throw '不正manifestが拒否されませんでした' }
+          if ([System.IO.File]::ReadAllText($outside) -ne 'keep') { throw 'manifest外のfileが変化' }
+          Write-Host 'Windows 既存ファイル温存 OK'

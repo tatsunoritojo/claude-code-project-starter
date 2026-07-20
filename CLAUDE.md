@@ -1,49 +1,80 @@
-# Claude Code 開発スタイルパック
+# Reliable Ship / Claude Code Project Starter
 
-Claude Code をペアプログラマーとして運用するためのグローバルルール・スキル・設定・プロジェクト雛形を1つにまとめた配布パッケージ。`~/.claude/` に展開して使う。
+AI支援開発を「小さく合意する → 根拠を確認する → 別文脈で反証する → 人間が決める」の4ゲートで運用する公開パッケージ。推奨導線はMarkdownのみのClaude Codeプラグイン。従来のグローバルルール・14スキル・設定・雛形は上級者向けフルパックとして維持する。
 
 ## 次セッション着手用
-- 現在地: ピン留め公開ショーケースとして仕上げ完了。CI(Linux+Windows)・匿名化チェックスクリプト・アンインストール(マニフェスト方式)・README強化(バッジ/使用イメージ/FAQ)を追加し master へマージ。CI は master で緑。リポジトリ説明文・トピックも設定済み。Codex レビューを2巡（README系・自動化系）反映
-- 次アクション: 別マシン/別ユーザーで install を実走させ体感確認。フィードバックがあれば反映
-- 参照ファイル: `home-claude/CLAUDE.md`(スタイル本体), `home-claude/hooks/session-greeting.sh`, `install.ps1`/`install.sh`, `uninstall.*`, `scripts/check-anonymization.sh`, `.github/workflows/ci.yml`, `README.md`
-- 未解決 / 別扱い: (1)グローバルから除外した個人色の強い要素（秘書/教材/3者協働）を汎用版で復活させるか未検討。(2)SessionStart の matcher 明示（startup 限定）は値の確証が取れたら追加検討。(3)インストーラに settings.json 自動マージ機能を持たせるかは別途。(4)匿名化スキャンのトークンは辞書語による誤検出を避け、固有名・個人パス中心に整理済み
-- 最終更新: 2026-05-30
+
+- 現在地: v1.0再設計を `agent/relaunch-v1` に実装し、Linuxの安全テスト、公開構造validator、匿名化、現行Claude Code CLI 2.1.215のmanifest検証と隔離HOMEへのplugin installまで完了
+- 次アクション: ドラフトPRを作成し、GitHub ActionsのLinux / Windows結果と人間レビューを確認する
+- 参照ファイル: `README.md`, `README.ja.md`, `plugins/reliable-ship/`, `project-template/`, `evals/`, `docs/case-study-mackairu.md`, `scripts/validate-repository.py`
+- 未解決 / 別扱い: Claude Code 2.1.215でmanifest strict検証と一時HOMEへのplugin installは成功。対話セッションでの4スキル実走とWindows CIはPR上で確認する。評価結果は未測定のまま公開し、結果を捏造しない
+- 最終更新: 2026-07-20
 
 ## このリポジトリの構成
 
-- `home-claude/` — `~/.claude/` に展開される中身（グローバル CLAUDE.md / settings.json / skills）
-- `project-template/` — 新規プロジェクトのルートにコピーする雛形
-- `install.ps1` / `install.sh` — グローバル展開インストーラ
-- 詳細は `docs/01-overview.md` を参照
+- `.claude-plugin/` — Marketplaceカタログ
+- `plugins/reliable-ship/` — 推奨導線。Markdownのみの4ゲート
+- `project-template/` — 新規/既存プロジェクトへコピーする雛形
+- `home-claude/` — `~/.claude/` に展開する上級者向けフルパック
+- `evals/` — 振る舞い比較の固定手順と生データ形式
+- `assets/` — READMEとSocial Previewの視覚素材
+- `install.ps1` / `install.sh` — フルパックのグローバル展開インストーラ
+- 詳細: `docs/01-overview.md`
 
 ## このプロジェクト固有の作業ルール
 
 ### 匿名化の鉄則（最重要）
 
-このパッケージは**完全公開・匿名化前提**。個人情報・固有名を一切含めない。コミット前に必ず次のカテゴリの混入を grep で確認する:
+このパッケージは完全公開前提。個人情報・顧客固有情報を配布物へ混入させない。コミット前に `scripts/check-anonymization.sh` を実行する。
 
-- 個人の氏名（ローマ字・漢字表記）
-- 所属企業名・派遣先名・業態名
-- 個人のホームディレクトリパス（`C:\Users\<name>` など）や個人運用ディレクトリの絶対パス
-- 実在プロダクト名・実在組織名
-- 個人運用システムへの依存参照（秘書システム・案件管理・キャリア管理など）
-- スキル原本に残る個人署名（`adapted by <name>` など）
+- 個人の氏名（ライセンス著作者表記を除く）
+- 所属企業・顧客・非公開プロダクト名
+- 個人ホームディレクトリの絶対パス
+- 個人運用システムへの依存
+- スキル原本の個人署名
 
-具体的なスキャン用トークン一覧は、公開ファイルにベタ書きせず、メンテナの手元（git 管理外のローカルメモ）に置く。スキルや CLAUDE.md を追加・更新したら、このスキャンを完了判定に含める。
+検出トークン一覧を追加する場合、辞書語の誤検出と公開情報の扱いを確認する。
 
 ### 改行コード
 
-`*.sh` は LF 固定（`.gitattributes` で強制）。CRLF だとフックや install.sh が `bad interpreter` で壊れる。
+`*.sh` はLF固定。CRLFではhookやinstallerが `bad interpreter` で壊れる。`.gitattributes` を維持する。
+
+### 公開主張の根拠
+
+- 効果・速度・品質の数値を、生データなしに記載しない
+- ケーススタディは公開commitから確認できる事実と、確認できない限界を分ける
+- `evals/results/` は実行前に「未測定」と明示し、結果を見てから評価手順を書き換えない
+
+### プラグインの権限境界
+
+- 推奨プラグインはMarkdownのskills/templatesのみとし、hook・MCP・実行ファイルを暗黙追加しない
+- 独立レビューは別レビュアーへ渡す資料作成まで。自己レビューを独立レビューと呼ばない
+- `merge-gate` は判断材料を作るだけで、merge / release / deployを実行しない
+- reviewed SHAとcurrent HEADが違う場合は必ず古いレビューとして扱う
+
+### リリース整合
+
+- Marketplaceとplugin manifestのversionを揃える
+- SVGを視覚素材の原本とし、`assets/social-preview.png` はdark heroから1280×640で再生成する
+- 英語READMEを既定、日本語READMEを完全な第2導線として維持する
+- 既存ADRは原則変更せず、新しい判断は新規ファイルへ追記する
 
 ## このプロジェクトの完了判定（Definition of Done）
 
-- [ ] 個人情報トークンの grep スキャンが 0 件
-- [ ] `home-claude/` の skill 14個が揃っている
-- [ ] install スクリプトがクリーンな ~/.claude（存在しない/既存あり）両方で安全に動く
-- [ ] README のインストール手順が実際の挙動と一致している
+- [ ] 個人情報トークンのgrepスキャンが0件
+- [ ] `scripts/validate-repository.py` が成功する
+- [ ] `plugins/reliable-ship/` の4スキルと4テンプレートが揃っている
+- [ ] `home-claude/` のskill 14個が揃っている
+- [ ] install scriptがクリーンな `~/.claude` と既存設定ありの両方で安全に動く
+- [ ] READMEのplugin / full-pack手順が実際の構成と一致する
+- [ ] 英日READMEのライト/ダーク画像とリンクが成立する
+- [ ] 公開ケーススタディの事実リンクと限界が明示される
 
 ## 関連ドキュメント
 
 - 概要: `docs/01-overview.md`
-- 設計判断（ADR）: `docs/decisions/`
-- 使い方: `README.md`
+- ケーススタディ: `docs/case-study-mackairu.md`
+- 評価: `evals/README.md`
+- 設計判断: `docs/decisions/`
+- リリース: `docs/release-checklist.md`
+- 使い方: `README.md` / `README.ja.md`

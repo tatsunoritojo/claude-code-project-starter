@@ -35,6 +35,8 @@ Desktop.ini
 coverage/
 .nyc_output/
 *.test.js.snap
+__pycache__/
+*.py[cod]
 
 # Temporary files
 *.tmp

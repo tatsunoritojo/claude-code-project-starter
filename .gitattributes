@@ -4,3 +4,9 @@
 # ワークフロー YAML も LF 固定。run: 内の heredoc が CRLF だと壊れる。
 *.yml text eol=lf
 *.yaml text eol=lf
+
+# 公開ドキュメントと視覚素材の原本
+*.md text eol=lf
+*.json text eol=lf
+*.svg text eol=lf
+*.png binary

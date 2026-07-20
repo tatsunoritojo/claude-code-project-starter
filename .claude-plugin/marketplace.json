@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "tojo-ai-workflows",
+  "version": "1.0.0",
+  "description": "Small, reviewable workflows for shipping AI-assisted software with explicit human control.",
+  "owner": {
+    "name": "tatsunoritojo"
+  },
+  "plugins": [
+    {
+      "name": "reliable-ship",
+      "displayName": "Reliable Ship",
+      "description": "Four explicit gates for framing, verifying, independently reviewing, and human-approving AI-assisted changes.",
+      "version": "1.0.0",
+      "author": {
+        "name": "tatsunoritojo"
+      },
+      "source": "./plugins/reliable-ship",
+      "category": "productivity",
+      "tags": [
+        "ai-development",
+        "code-review",
+        "safety",
+        "workflow"
+      ]
+    }
+  ]
+}

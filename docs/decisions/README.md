@@ -2,6 +2,11 @@
 
 このリポジトリの設計判断記録を **1判断1ファイル** で配置する。
 
+## Index
+
+- [`0001-distribute-as-anonymized-style-pack.md`](0001-distribute-as-anonymized-style-pack.md)
+- [`0002-package-reliable-ship-as-a-plugin.md`](0002-package-reliable-ship-as-a-plugin.md)
+
 ## 命名規約
 
 `NNNN-<kebab-title>.md`（`NNNN` は4桁ゼロ埋め連番）

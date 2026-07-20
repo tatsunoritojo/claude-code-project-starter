@@ -36,10 +36,19 @@ if (-not (Test-Path $manifestPath)) {
 if (-not $Yes) { Write-Host "(ドライラン。実際に削除するには -Yes を付けて実行)" }
 Write-Host ""
 
+$manifestEntries = @(
+  Get-Content -Path $manifestPath -Encoding UTF8 |
+    ForEach-Object { $_.Trim() } |
+    Where-Object { $_ }
+)
+foreach ($rel in $manifestEntries) {
+  if ($rel -notmatch '^(skills|hooks)/[A-Za-z0-9][A-Za-z0-9._-]*$') {
+    throw "不正なマニフェスト行を検出しました。削除を中止します: $rel"
+  }
+}
+
 $removedAny = $false
-foreach ($rel in Get-Content -Path $manifestPath -Encoding UTF8) {
-  $rel = $rel.Trim()
-  if (-not $rel) { continue }
+foreach ($rel in $manifestEntries) {
   $path = Join-Path $target ($rel -replace '/', '\')
   if (-not (Test-Path $path)) { continue }
   if ($Yes) {
