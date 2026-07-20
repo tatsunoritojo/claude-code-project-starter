@@ -6,7 +6,7 @@
 #
 # 使い方:
 #   bash install.sh                 通常インストール
-#   FORCE=1 bash install.sh         既存の CLAUDE.md / settings.json / 同名スキルを上書き
+#   FORCE=1 bash install.sh         既存の CLAUDE.md / settings.json / 同名スキル・フックを上書き
 #   USER_NAME="山田太郎" bash install.sh   プロフィールのプレースホルダを埋める
 #
 set -euo pipefail
@@ -103,11 +103,17 @@ if [ -d "$SRC_HOOKS" ]; then
   for h in "$SRC_HOOKS"/*; do
     [ -f "$h" ] || continue
     name="$(basename "$h")"
-    [ -e "$DST_HOOKS/$name" ] && backup_if_exists "$DST_HOOKS/$name"
-    cp "$h" "$DST_HOOKS/$name"
-    chmod +x "$DST_HOOKS/$name"
-    echo "hooks/$name" >> "$TMP_MAN"
-    echo "  フック配置: hooks/$name"
+    rel="hooks/$name"
+    dst="$DST_HOOKS/$name"
+    if [ -e "$dst" ] && [ "$FORCE" != "1" ]; then
+      echo "  スキップ（既存）: $rel  ※上書きするには FORCE=1"
+      continue
+    fi
+    [ -e "$dst" ] && backup_if_exists "$dst"
+    cp "$h" "$dst"
+    chmod +x "$dst"
+    echo "$rel" >> "$TMP_MAN"
+    echo "  フック配置: $rel"
   done
 fi
 

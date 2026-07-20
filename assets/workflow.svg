@@ -1,0 +1,61 @@
+<svg width="1280" height="390" viewBox="0 0 1280 390" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Reliable Ship workflow</title>
+  <desc id="desc">A four-stage process from entry contract through evidence and independent review to a human merge gate.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="390" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111827"/>
+      <stop offset="1" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="line" x1="120" y1="0" x2="1160" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A78BFA"/>
+      <stop offset="0.34" stop-color="#67E8F9"/>
+      <stop offset="0.67" stop-color="#FDA4AF"/>
+      <stop offset="1" stop-color="#FCD34D"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="390" rx="28" fill="url(#bg)"/>
+  <text x="64" y="62" fill="#F8FAFC" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="28" font-weight="800">The review target never floats.</text>
+  <text x="64" y="92" fill="#94A3B8" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="16">Every decision points to a contract, evidence, and an exact commit.</text>
+  <path d="M116 176H1162" stroke="url(#line)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M1162 176L1146 166V186L1162 176Z" fill="#FCD34D"/>
+
+  <g transform="translate(70 130)">
+    <circle cx="46" cy="46" r="46" fill="#2E2150" stroke="#A78BFA" stroke-width="3"/>
+    <text x="46" y="53" text-anchor="middle" fill="#DDD6FE" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="22" font-weight="850">01</text>
+    <text x="0" y="126" fill="#F8FAFC" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="800">FRAME</text>
+    <text x="0" y="153" fill="#AAB6C5" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14">Contract + base SHA</text>
+    <rect y="174" width="204" height="72" rx="14" fill="#181C2B" stroke="#30384C"/>
+    <text x="16" y="200" fill="#C4B5FD" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">entry.status  READY</text>
+    <text x="16" y="225" fill="#CBD5E1" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">base          a41e…</text>
+  </g>
+
+  <g transform="translate(372 130)">
+    <circle cx="46" cy="46" r="46" fill="#123445" stroke="#67E8F9" stroke-width="3"/>
+    <text x="46" y="53" text-anchor="middle" fill="#CFFAFE" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="22" font-weight="850">02</text>
+    <text x="0" y="126" fill="#F8FAFC" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="800">VERIFY</text>
+    <text x="0" y="153" fill="#AAB6C5" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14">Evidence + HEAD SHA</text>
+    <rect y="174" width="204" height="72" rx="14" fill="#181C2B" stroke="#30384C"/>
+    <text x="16" y="200" fill="#67E8F9" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">checks         PASS</text>
+    <text x="16" y="225" fill="#CBD5E1" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">head           8f31…</text>
+  </g>
+
+  <g transform="translate(674 130)">
+    <circle cx="46" cy="46" r="46" fill="#48202C" stroke="#FDA4AF" stroke-width="3"/>
+    <text x="46" y="53" text-anchor="middle" fill="#FFE4E6" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="22" font-weight="850">03</text>
+    <text x="0" y="126" fill="#F8FAFC" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="800">CHALLENGE</text>
+    <text x="0" y="153" fill="#AAB6C5" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14">Independent findings</text>
+    <rect y="174" width="204" height="72" rx="14" fill="#181C2B" stroke="#30384C"/>
+    <text x="16" y="200" fill="#FDA4AF" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">reviewed       8f31…</text>
+    <text x="16" y="225" fill="#CBD5E1" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">blockers       0</text>
+  </g>
+
+  <g transform="translate(976 130)">
+    <circle cx="46" cy="46" r="46" fill="#493512" stroke="#FCD34D" stroke-width="3"/>
+    <text x="46" y="53" text-anchor="middle" fill="#FEF3C7" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="22" font-weight="850">04</text>
+    <text x="0" y="126" fill="#F8FAFC" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="800">DECIDE</text>
+    <text x="0" y="153" fill="#AAB6C5" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14">Human merge gate</text>
+    <rect y="174" width="224" height="72" rx="14" fill="#211D14" stroke="#5D4A23"/>
+    <text x="16" y="200" fill="#FCD34D" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">sha.match      true</text>
+    <text x="16" y="225" fill="#F8FAFC" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">decision       HUMAN</text>
+  </g>
+</svg>

@@ -29,6 +29,15 @@ fi
 [ "$YES" = "1" ] || echo "(ドライラン。実際に削除するには YES=1 を付けて実行)"
 echo ""
 
+# 改ざん・破損したマニフェストから TARGET 外を削除しない。
+while IFS= read -r rel; do
+  [ -n "$rel" ] || continue
+  if ! [[ "$rel" =~ ^(skills|hooks)/[A-Za-z0-9][A-Za-z0-9._-]*$ ]]; then
+    echo "不正なマニフェスト行を検出しました。削除を中止します: $rel" >&2
+    exit 1
+  fi
+done < "$MANIFEST"
+
 removed_any=0
 while IFS= read -r rel; do
   [ -n "$rel" ] || continue

@@ -1,26 +1,40 @@
-# Claude Code 開発スタイルパック - 概要
+# Reliable Ship — overview
 
-ステータス: active
+Status: active
 
-## 何を解決するか
+## What it solves
 
-Claude Code の運用スタイル（実行ポリシー・規律・ドキュメント標準・スキル）は通常その人の `~/.claude/` に閉じていて、他人の環境で同じ動き方を再現できない。このパッケージは、その運用スタイルを匿名化して持ち運び可能にし、インストール一発でどの環境でも同じスタイルを立ち上げられるようにする。
+AI coding tools can implement quickly while leaving scope, proof, review freshness, and final authority implicit. Reliable Ship makes those boundaries visible through four gates: frame the change, verify the current commit, hand it to a separate reviewer, and leave the final merge or release decision to a human.
 
-## 誰のためか
+## Who it is for
 
-- 確立した Claude Code 運用スタイルを、別マシン・チームメンバー・公開先に配布したい人
-- 一貫した実行ポリシーとドキュメント規律を、新規プロジェクトの最初から効かせたい人
+- individual developers using Claude Code on software they intend to ship;
+- small teams that want a reviewable AI workflow without adopting a large specification system;
+- maintainers who use Claude Code for implementation and Codex or another separate context for adversarial review;
+- people who need the same project-entry and handoff structure across repositories.
 
-## 主要概念
+## Key concepts
 
-- **グローバルルール（スタイル本体）**: `home-claude/CLAUDE.md`。全セッション共通の作業規律。展開先は `~/.claude/CLAUDE.md`
-- **汎用スキル**: `home-claude/skills/`。実行判定・障害対応・ドキュメント整備などを手続き化した14個
-- **プロジェクト雛形**: `project-template/`。新規プロジェクトに必須ドキュメント3点構成を最初から用意する
-- **グローバル展開インストーラ**: `install.ps1` / `install.sh`。既存設定を壊さず `~/.claude/` へマージ展開
-- **匿名化**: 固有名・個人パス・実プロダクト名を含めない。プロフィールはプレースホルダ
+- **Entry contract:** one outcome, explicit non-goals, observable acceptance checks, risk boundaries, and a base SHA.
+- **Evidence record:** every completion claim maps to a command, test, or inspected behavior at an exact HEAD SHA.
+- **Independent challenge:** the implementer's narrative becomes a neutral packet for a genuinely separate reviewer.
+- **SHA freshness:** verification and approval do not carry forward after the reviewed commit changes.
+- **Human authority:** AI outputs recommendations and evidence; a human owns merge and release.
 
-## 関連リンク
+## Distribution
 
-- リポジトリ: このディレクトリ
-- 設計判断: `docs/decisions/`
-- 使い方: `README.md`
+- **Recommended:** `Reliable Ship` marketplace plugin with four Markdown skills and four templates. It includes no executable hooks or MCP servers.
+- **Repository starter:** `project-template/` adds concise project memory, an overview, append-only ADRs, session context, and Issue/PR gates.
+- **Advanced:** the legacy full style pack installs global Japanese rules, fourteen skills, settings, and a session-start greeting through non-destructive scripts.
+
+## Evidence policy
+
+The public MacKairu case study links observable commits and states its limitations. The evaluation kit publishes a fixed protocol and raw-result format before results. Behavioral benefit remains unmeasured until matched runs are committed.
+
+## Related links
+
+- Usage: [`README.md`](../README.md)
+- Japanese guide: [`README.ja.md`](../README.ja.md)
+- Case study: [`case-study-mackairu.md`](case-study-mackairu.md)
+- Evaluation: [`evals/`](../evals/)
+- Decisions: [`docs/decisions/`](decisions/)

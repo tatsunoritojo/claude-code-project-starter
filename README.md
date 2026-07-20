@@ -1,244 +1,260 @@
-<h1 align="center">Claude Code 開発スタイルパック</h1>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/hero-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="./assets/hero-light.svg">
+  <img alt="Reliable Ship — build fast, review independently, merge deliberately" src="./assets/hero-light.svg">
+</picture>
 
-<p align="center"><b>Claude Code を、いきなり「気の利く相棒」にする設定パック</b></p>
+<h1 align="center">Reliable Ship</h1>
 
-<p align="center">経験のある開発者が Claude Code に仕込んでいる「働き方のルール」一式を、<br>そのまま自分の環境にコピーできます。</p>
+<p align="center"><strong>A reviewable Claude Code workflow for software you intend to ship.</strong></p>
+
+<p align="center">
+  Claude implements. A separate reviewer challenges. A human decides.
+</p>
+
+<p align="center">
+  <a href="README.md">English</a> · <a href="README.ja.md">日本語</a>
+</p>
 
 <p align="center">
   <a href="https://github.com/tatsunoritojo/claude-code-project-starter/actions/workflows/ci.yml"><img src="https://github.com/tatsunoritojo/claude-code-project-starter/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
-  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey" alt="Platform">
-  <img src="https://img.shields.io/badge/setup-3%20steps-brightgreen" alt="Setup">
+  <img src="https://img.shields.io/badge/Claude_Code-plugin-7C3AED" alt="Claude Code plugin">
+  <img src="https://img.shields.io/badge/components-Markdown_only-0E7490" alt="Markdown-only plugin">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-334155" alt="MIT License"></a>
 </p>
 
 ---
 
-## 入れると何が変わるか
+Claude Code can move quickly. Speed becomes useful only when everyone can answer four questions:
 
-同じ Claude Code でも、働き方がこう変わります。
+1. What exactly did we agree to change?
+2. What evidence proves the current commit?
+3. Did a separate reviewer challenge that exact commit?
+4. Who owns the final merge or release decision?
 
-| 場面 | パック導入前 | パック導入後 |
-|---|---|---|
-| 本番反映・ファイル削除・強制 push（履歴の上書き） | そのまま実行されることがある | **必ず一言確認してから**進める |
-| 調べもの・テスト実行・コード読み | 都度許可を求めて止まりがち | いちいち聞かず**サッと自走** |
-| 回答の根拠 | 「たぶんこう」で答えることも | **コードや公式ドキュメントを確認**してから答える |
-| 完了の報告 | 「動くはず」で終わりがち | **ビルド・テストを確かめて**から完了 |
-| 作業の終わり | 文脈が流れて消える | **引き継ぎメモ**を残す |
-| 新規プロジェクト | 何もない状態から | 説明ファイルの**ひな型が最初から**そろう |
+Reliable Ship turns those questions into four explicit skills. It is intentionally smaller than a specification framework and stricter than a prompt collection.
 
-匿名化してあるので、誰が使っても大丈夫です。
+## Install in two commands
 
-> [!TIP]
-> 一言でいうと「良い初期設定をゼロから書かなくて済む」パックです。Claude Code を入れたばかりで使いこなし方が分からない人ほど効きます。
+Run these inside Claude Code:
 
-## こんな人におすすめ
+```text
+/plugin marketplace add tatsunoritojo/claude-code-project-starter
+/plugin install reliable-ship@tojo-ai-workflows
+```
 
-- Claude Code を使い始めたばかりで、**どう設定すればうまく使えるか**が分からない人
-- Claude に**いきなり危ない操作**をされないか不安な人
-- 毎回ゼロから指示を書くのに疲れて、**良い初期設定**がほしい人
-- 複数のプロジェクトやマシンで**同じ使い心地に揃えたい**人
+Then reload plugins if Claude Code asks you to:
 
-## 使い始める（3ステップ）
+```text
+/reload-plugins
+```
 
-### 1. ダウンロード
+> [!NOTE]
+> The plugin contains four Markdown skills and four Markdown templates. It adds no hooks, MCP servers, binaries, background processes, or automatic merge behavior.
 
-このリポジトリを `git clone` するか、ZIP でダウンロードして展開します。
+## Use the four gates
 
-### 2. インストール
+| Gate | Command | Produces | Stops when |
+|---|---|---|---|
+| Frame | `/reliable-ship:frame` | Outcome, non-goals, acceptance checks, base SHA | Scope or authority is ambiguous |
+| Verify | `/reliable-ship:verify` | Acceptance-to-evidence map tied to HEAD | Evidence is missing or contradictory |
+| Challenge | `/reliable-ship:review-brief` | Self-contained brief for Codex or another separate reviewer | Verification is missing or stale |
+| Decide | `/reliable-ship:merge-gate` | Current evidence, findings, residual risk, human decision surface | Reviewed SHA and current HEAD differ |
 
-中身を Claude Code の設定フォルダ（`~/.claude/`。Windows では `C:\Users\あなた\.claude\`）へ展開します。付属スクリプトが自動でやります。
+<p align="center">
+  <img src="./assets/workflow.svg" alt="Reliable Ship workflow: frame, verify, challenge, decide">
+</p>
 
-**Windows（PowerShell）**
+The normal sequence is:
+
+```text
+/reliable-ship:frame
+# Claude Code implements the accepted change
+/reliable-ship:verify
+/reliable-ship:review-brief
+# Give the brief to Codex or another independent reviewer
+/reliable-ship:merge-gate
+# A human chooses merge, revise, or hold
+```
+
+### The invariant
+
+Verification and review are valid only for the clean commit SHA they name. Uncommitted changes cannot inherit that evidence. If HEAD or the worktree changes, the affected gate must run again after the work is committed.
+
+This is designed to block a common failure mode at the gate: an agent receives approval, changes the code afterward, and lets the old approval appear to cover the new state.
+
+## What the plugin will and will not do
+
+| It will | It will not |
+|---|---|
+| Keep one change human-sized | Invent a full product specification |
+| Require observable acceptance evidence | Treat “should work” as proof |
+| Prepare a neutral independent-review packet | Call Claude's self-review independent |
+| Detect stale reviewed SHAs | Carry approval across later commits |
+| Make residual risk visible | Merge, release, or deploy for the human |
+
+Reliable Ship can prepare a handoff for Codex, but it does not call Codex itself. Independence comes from using a genuinely separate review context, not from changing the label on the same agent.
+
+## Start a repository with the same gates
+
+The [`project-template/`](project-template/) directory adds the repository-side pieces:
+
+- a concise project `CLAUDE.md`;
+- one-page `docs/01-overview.md`;
+- append-only architecture decision records;
+- session-start context;
+- a human-sized AI change Issue form;
+- a pull request template with evidence, reviewed SHA, and human merge fields.
+
+Copy it into a new or existing repository and replace the placeholders.
+
+**macOS / Linux**
+
+```bash
+cp -R project-template/CLAUDE.md \
+  project-template/docs \
+  project-template/.claude \
+  project-template/.github \
+  /path/to/your-project/
+```
+
+**Windows PowerShell**
+
+```powershell
+Copy-Item -Recurse `
+  project-template\CLAUDE.md, `
+  project-template\docs, `
+  project-template\.claude, `
+  project-template\.github `
+  C:\path\to\your-project\
+```
+
+The plugin never copies these files automatically. You choose what enters a repository.
+
+This repository mirrors the same Issue and pull request templates under `.github/`, so the workflow is used to maintain itself.
+
+## Evidence, not slogans
+
+### Public case study
+
+[MacKairu: changing a native macOS app without losing control](docs/case-study-mackairu.md) traces a public sequence that:
+
+- fixes a Japanese IME defect;
+- splits a 666-line view and a 1,196-line state object;
+- keeps intended behavior stable across structural phases;
+- moves pure logic into direct tests, increasing the reported test count from 58 to 69;
+- records build, test, and Codex-review checkpoints in public commits.
+
+The case study also states its limits: the history is observational, full review transcripts are not public, and no productivity percentage is claimed.
+
+### Reproducible evaluation
+
+The [`evals/`](evals/) kit defines matched control/plugin scenarios for:
+
+- scope drift;
+- unsupported completion claims;
+- stale review SHAs;
+- fake review independence;
+- silent transfer of merge authority to AI.
+
+Published result status: **not measured yet**. The protocol and raw-result format ship before any behavioral claim.
+
+### Automated repository checks
+
+CI currently checks:
+
+- Linux and Windows install/uninstall behavior for the full style pack;
+- preservation of pre-existing rules, settings, same-name skills, and hooks;
+- JSON syntax and skill frontmatter;
+- marketplace/plugin structure;
+- required workflow and project templates;
+- shell script errors;
+- accidental personal or client identifiers.
+
+## Advanced: install the full style pack
+
+The plugin is the recommended public entry point. The original full pack remains for users who also want global Claude Code rules, fourteen Japanese workflow skills, project defaults, and a session-start greeting.
+
+Clone or download the repository, then run:
+
+**Windows PowerShell**
 
 ```powershell
 .\install.ps1
-# 名前と役割を最初から入れておく場合:
-.\install.ps1 -UserName "山田太郎" -UserRole "バックエンドエンジニア"
+# Optional profile values:
+.\install.ps1 -UserName "Your name" -UserRole "Backend engineer"
 ```
 
 **macOS / Linux**
 
 ```bash
 bash install.sh
-# 名前と役割を最初から入れておく場合:
-USER_NAME="山田太郎" USER_ROLE="バックエンドエンジニア" bash install.sh
+# Optional profile values:
+USER_NAME="Your name" USER_ROLE="Backend engineer" bash install.sh
 ```
 
-> [!IMPORTANT]
-> スクリプトは**今ある設定を勝手に上書きしません**。
-> - `CLAUDE.md` と `settings.json` がすでにある場合は、新しい内容を `〜.stylepack` という別ファイルに書き出すので、見比べてから取り込めます。
-> - 同じ名前のスキルがすでにある場合は、上書きせずスキップします（`-Force` を付けたときだけ、バックアップを取ってから入れ替え）。
-> - フック（起動時あいさつ）は配置しますが、既存の同名ファイルがあればバックアップを取ってから置き換えます。
-> - 何を入れたかは `~/.claude/.stylepack-manifest` に記録し、アンインストールはこれに基づいて**入れたものだけ**を消します。
+The installer is non-destructive by default:
 
-### 3. Claude Code を再起動
-
-起動時にこの1行が出れば、パックが効いています。
-
-```text
-[開発スタイルパック] 有効 ｜ skills: 14 ｜ profile: 設定済み
-```
-
-まだ自己紹介（プロフィール）が未入力なら `profile: 未設定` と出て、Claude が「プロフィールを設定しましょうか？」と声をかけます。名前・役割などを答えるだけで、Claude が設定ファイルを書き込みます。
-
-## 使ってみる（イメージ）
-
-初回起動でプロフィールを設定する流れ:
-
-```text
-[開発スタイルパック] 有効 ｜ skills: 14 ｜ profile: 未設定
-
-Claude: スタイルパックを入れた直後ですね。プロフィールを設定しましょうか？
-        お名前と役割を教えてください。
-あなた: 山田太郎、バックエンドエンジニア
-Claude: 設定しました（~/.claude/CLAUDE.md を更新）。使えるスキルは14個です。
-```
-
-危ない操作の前に確認が入る様子:
-
-```text
-あなた: もう要らないテーブルだから users を消しといて
-Claude: 本番DBのテーブル削除は影響が大きいので、実行前に確認させてください。
-        対象: users テーブル / 影響: 復元できません。進めてよいですか？
-```
-
-> [!NOTE]
-> 上記は挙動のイメージです。実際の応答は状況によって変わります。
-
----
-
-## もう少し詳しく
-
-### インストールすると入るもの
-
-- **働き方のルール** — 全プロジェクトで Claude が守る共通の作業ルール（上の表の中身）
-- **スキル14個** — よく使う作業を手順化したもの。「コミットを作って」「デプロイ前チェック」などと頼むと、その手順で動きます
-- **新規プロジェクト用のひな型** — 新しいプロジェクトに置くと説明ファイルが最初から整います
+- existing `CLAUDE.md` and `settings.json` are written as `.stylepack` side files;
+- existing same-name skills are skipped;
+- an existing same-name hook is skipped;
+- forced replacements are backed up;
+- an install manifest limits what uninstall may remove;
+- uninstall is a dry run unless explicitly confirmed.
 
 <details>
-<summary><b>付いてくるスキル一覧（14個）</b></summary>
+<summary><strong>Full-pack uninstall</strong></summary>
 
-<br>
-
-| スキル | 何をしてくれるか |
-|---|---|
-| `exec-boundary-guard` | 操作の危険度を判定し、危ないものだけ確認する |
-| `design-actor-impact` | 設計変更が「誰の使い勝手に影響するか」を整理する |
-| `handoff-closeout` | 作業終わりに引き継ぎメモを残す |
-| `repo-health-check` | プロジェクト着手時の初動チェック |
-| `deploy-check` | デプロイ前にビルド・テスト・状態をまとめて確認 |
-| `doc-init` | プロジェクトの説明ファイルを整える |
-| `incident-response` | 本番障害のとき、復旧と原因究明を並行で進める |
-| `db-audit` | データベース設計をレビューする |
-| `database-migration-review` | DB のスキーマ変更（テーブル構造の変更）を安全に行う設計をレビュー |
-| `search-first` | 自作で書き始める前に、既存コードや一次情報を調べる |
-| `strategic-compact` | 長い会話を整理するタイミングを判断する |
-| `mermaid-sequence-diagram` | 処理の流れを図（シーケンス図）にする |
-| `readme-portfolio` | 公開向けの README を作る |
-| `git-github-workflow` | コミット・ブランチ・プルリクの操作 |
-
-</details>
-
-### インストール後にやること
-
-設定フォルダの `~/.claude/CLAUDE.md` を開き、冒頭の「ユーザープロフィール」を自分の情報に書き換えます（Claude に「プロフィールを設定して」と頼めば、聞きながら書き込みます）。
-
-スクリプトに `-UserName` / `USER_NAME` を渡した場合は、名前と役割は自動で埋まります。残りの「専門・背景」「開発スタイル」は手で書き足してください。
-
-> [!NOTE]
-> 応答の言語は**日本語が既定**です。英語で使いたい場合は `~/.claude/CLAUDE.md` の「出力ルール」の言語欄を書き換えます。
-
-### 新しいプロジェクトでひな型を使う
-
-新しいプロジェクトを始めるときは、`project-template/` の中身をプロジェクトのフォルダにコピーします（エクスプローラーやFinderで手作業でコピーしても構いません）。
-
-**macOS / Linux**
-
-```bash
-cp -r project-template/CLAUDE.md project-template/docs project-template/.claude /path/to/your-project/
-```
-
-**Windows（PowerShell）**
+**Windows**
 
 ```powershell
-Copy-Item -Recurse project-template\CLAUDE.md, project-template\docs, project-template\.claude C:\path\to\your-project\
-```
-
-コピーした `CLAUDE.md` と `docs/01-overview.md` の `{{ }}` の部分を埋めれば、そのプロジェクトの説明が整います。
-
-### 起動時のあいさつを消したいとき
-
-起動時の1行（グリーティング）は既定で有効です。不要なら `~/.claude/settings.json` の `hooks` の `SessionStart` から `session-greeting.sh` の登録を消します。あいさつが出なくても、ルールやスキルは問題なく動きます。
-
-> [!NOTE]
-> あいさつの表示にはシェル（macOS / Linux、または Windows で Claude Code が使うシェル）が必要です。シェルが使えない環境では、あいさつが出ないだけで他は通常どおり動きます。
-
-<details>
-<summary><b>フォルダ構成</b></summary>
-
-<br>
-
-```
-claude-code-project-starter/
-├── install.ps1 / install.sh     # 設定フォルダへ展開するスクリプト
-├── home-claude/                 # → ~/.claude/ に入る中身
-│   ├── CLAUDE.md                # 全プロジェクト共通の働き方ルール
-│   ├── settings.json            # 許可コマンドと起動時あいさつの設定
-│   ├── skills/                  # スキル14個
-│   └── hooks/                   # 起動時あいさつのスクリプト
-└── project-template/            # → 新しいプロジェクトに置くひな型
-```
-
-</details>
-
-<details>
-<summary><b>スクリプトを使わず手動で入れる</b></summary>
-
-<br>
-
-1. `home-claude/CLAUDE.md` を `~/.claude/CLAUDE.md` にコピー（既存があれば見比べてマージ）
-2. `home-claude/skills/*` を `~/.claude/skills/` にコピー
-3. `home-claude/hooks/*` を `~/.claude/hooks/` にコピー（`session-greeting.sh` を実行可能にする）
-4. `home-claude/settings.json` の `permissions` と `hooks`（起動時あいさつ）を `~/.claude/settings.json` にマージ
-5. `~/.claude/CLAUDE.md` のプロフィールを編集
-6. Claude Code を再起動
-
-</details>
-
-### アンインストール
-
-インストール時の記録（`.stylepack-manifest`）に基づき、**パックが入れたものだけ**を取り除きます（自前の同名スキルには触りません）。安全のため**既定はドライラン**（消える内容を表示するだけ）です。
-
-**Windows（PowerShell）**
-
-```powershell
-.\uninstall.ps1        # 何が消えるか表示するだけ
-.\uninstall.ps1 -Yes   # 実際に削除
+.\uninstall.ps1
+.\uninstall.ps1 -Yes
 ```
 
 **macOS / Linux**
 
 ```bash
-bash uninstall.sh        # 何が消えるか表示するだけ
-YES=1 bash uninstall.sh  # 実際に削除
+bash uninstall.sh
+YES=1 bash uninstall.sh
 ```
 
-`settings.json` と `CLAUDE.md` は自分で編集している可能性があるため、自動では消しません（表示される手順で手動で外します）。
+`CLAUDE.md` and `settings.json` are not deleted automatically because they may contain user edits.
 
-## よくある質問
+</details>
 
-**Q. いま使っている `~/.claude` の設定は壊れませんか？**
-壊れません。`CLAUDE.md` と `settings.json` がすでにある場合は上書きせず `〜.stylepack` に書き出します。同名のスキルはスキップします。
+## Repository map
 
-**Q. やめたくなったら戻せますか？**
-`uninstall.ps1` / `uninstall.sh` で取り除けます。`-Force` で上書きした場合は `~/.claude/.stylepack-backup-*` から元に戻せます。
+```text
+.
+├── .claude-plugin/             # Marketplace catalog
+├── plugins/reliable-ship/      # Four Markdown-only workflow skills
+├── project-template/           # CLAUDE.md, docs, Issue, and PR starter
+├── home-claude/                # Advanced full style pack (14 skills)
+├── evals/                      # Reproducible behavioral evaluation kit
+├── docs/                       # Overview, case study, and ADRs
+├── assets/                     # Light/dark hero, workflow, social preview
+├── install.* / uninstall.*     # Safe full-pack installers
+└── scripts/                    # Repository validation and anonymization
+```
 
-**Q. Windows でも動きますか？**
-動きます。インストールには PowerShell スクリプトを用意しています。起動時あいさつの表示にはシェルが必要ですが、出なくてもルールとスキルは問題なく動きます。
+## Design principles
 
-**Q. 中身は自分用に変えられますか？**
-はい。`~/.claude/CLAUDE.md`（働き方ルール）や各スキルの `SKILL.md` を直接編集できます。
+- **Small contracts beat giant issues.** Capture only what changes implementation or approval.
+- **Evidence beats confidence.** “Done” is a claim until checks support it.
+- **Review targets are immutable.** Approval belongs to a SHA, not a branch name.
+- **Different roles need different context.** Implementation and refutation should not share assumptions by default.
+- **Humans retain authority.** AI can recommend; it does not inherit merge or release ownership.
 
-## ライセンス
+## Documentation
 
-MIT License（[LICENSE](LICENSE) 参照）。一部のスキルは MIT ライセンスの先行実装を改編して含みます（各 `SKILL.md` の `origin` を参照）。
+- [Project overview](docs/01-overview.md)
+- [MacKairu case study](docs/case-study-mackairu.md)
+- [Evaluation protocol](evals/README.md)
+- [Architecture decisions](docs/decisions/)
+- [Contributing](CONTRIBUTING.md)
+- [Security](SECURITY.md)
+
+## License
+
+MIT. See [`LICENSE`](LICENSE). Some full-pack skills adapt earlier MIT-licensed work; their individual `SKILL.md` files retain origin notes.

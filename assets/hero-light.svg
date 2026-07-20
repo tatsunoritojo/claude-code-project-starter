@@ -1,0 +1,99 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Reliable Ship for Claude Code</title>
+  <desc id="desc">Build fast, review independently, and merge deliberately through four explicit workflow gates.</desc>
+  <defs>
+    <linearGradient id="bg" x1="80" y1="20" x2="1180" y2="620" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FAFC"/>
+      <stop offset="0.55" stop-color="#F5F3FF"/>
+      <stop offset="1" stop-color="#ECFEFF"/>
+    </linearGradient>
+    <linearGradient id="wordmark" x1="95" y1="105" x2="620" y2="178" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5B21B6"/>
+      <stop offset="0.55" stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#0E7490"/>
+    </linearGradient>
+    <pattern id="dots" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.5" fill="#7C3AED" fill-opacity="0.12"/>
+    </pattern>
+  </defs>
+
+  <rect width="1280" height="640" rx="30" fill="url(#bg)"/>
+  <rect width="1280" height="640" rx="30" fill="url(#dots)"/>
+  <circle cx="1120" cy="82" r="190" fill="#22D3EE" fill-opacity="0.08"/>
+  <circle cx="1190" cy="10" r="120" fill="#7C3AED" fill-opacity="0.09"/>
+  <path d="M1020 144C1095 80 1168 92 1248 154" stroke="#7C3AED" stroke-width="2" stroke-opacity="0.17" stroke-dasharray="7 10"/>
+  <path d="M1005 170C1097 92 1190 112 1265 185" stroke="#0891B2" stroke-width="2" stroke-opacity="0.13" stroke-dasharray="7 10"/>
+
+  <g transform="translate(88 72)">
+    <rect width="238" height="36" rx="18" fill="#FFFFFF" stroke="#DDD6FE"/>
+    <circle cx="19" cy="18" r="6" fill="#7C3AED"/>
+    <text x="35" y="23" fill="#4C1D95" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="700" letter-spacing="1.3">CLAUDE CODE WORKFLOW</text>
+  </g>
+
+  <text x="88" y="185" fill="url(#wordmark)" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="72" font-weight="850" letter-spacing="-2">RELIABLE SHIP</text>
+  <text x="91" y="235" fill="#334155" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="27" font-weight="650">Build fast. Review independently. Merge deliberately.</text>
+  <text x="91" y="276" fill="#64748B" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="18">Four explicit gates. One immutable review target. A human final decision.</text>
+
+  <g transform="translate(946 75)">
+    <rect width="238" height="104" rx="22" fill="#0F172A"/>
+    <text x="24" y="34" fill="#94A3B8" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13">review.target</text>
+    <text x="24" y="61" fill="#F8FAFC" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="15" font-weight="700">HEAD  8f31...c92a</text>
+    <circle cx="28" cy="82" r="5" fill="#34D399"/>
+    <text x="42" y="87" fill="#A7F3D0" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="700">SHA MATCH</text>
+  </g>
+
+  <path d="M208 379H1070" stroke="#CBD5E1" stroke-width="3"/>
+  <path d="M1070 379L1055 370V388L1070 379Z" fill="#94A3B8"/>
+
+  <g>
+    <g transform="translate(72 332)">
+      <rect width="260" height="184" rx="24" fill="#FFFFFF" stroke="#DDD6FE" stroke-width="2"/>
+      <rect x="18" y="18" width="42" height="42" rx="13" fill="#EDE9FE"/>
+      <text x="39" y="47" text-anchor="middle" fill="#6D28D9" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="850">1</text>
+      <text x="76" y="48" fill="#111827" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="23" font-weight="800">FRAME</text>
+      <text x="20" y="92" fill="#475569" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="16">Outcome · non-goals</text>
+      <text x="20" y="119" fill="#475569" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="16">Acceptance · base SHA</text>
+      <rect x="20" y="146" width="94" height="22" rx="11" fill="#F5F3FF"/>
+      <text x="67" y="162" text-anchor="middle" fill="#6D28D9" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="800">ENTRY GATE</text>
+    </g>
+
+    <g transform="translate(364 332)">
+      <rect width="260" height="184" rx="24" fill="#FFFFFF" stroke="#BAE6FD" stroke-width="2"/>
+      <rect x="18" y="18" width="42" height="42" rx="13" fill="#E0F2FE"/>
+      <text x="39" y="47" text-anchor="middle" fill="#0369A1" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="850">2</text>
+      <text x="76" y="48" fill="#111827" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="23" font-weight="800">VERIFY</text>
+      <text x="20" y="92" fill="#475569" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="16">Acceptance → evidence</text>
+      <text x="20" y="119" fill="#475569" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="16">Checks tied to HEAD</text>
+      <rect x="20" y="146" width="114" height="22" rx="11" fill="#F0F9FF"/>
+      <text x="77" y="162" text-anchor="middle" fill="#0369A1" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="800">EVIDENCE GATE</text>
+    </g>
+
+    <g transform="translate(656 332)">
+      <rect width="260" height="184" rx="24" fill="#FFFFFF" stroke="#FECDD3" stroke-width="2"/>
+      <rect x="18" y="18" width="42" height="42" rx="13" fill="#FFE4E6"/>
+      <text x="39" y="47" text-anchor="middle" fill="#BE123C" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="850">3</text>
+      <text x="76" y="48" fill="#111827" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="23" font-weight="800">CHALLENGE</text>
+      <text x="20" y="92" fill="#475569" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="16">Separate reviewer</text>
+      <text x="20" y="119" fill="#475569" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="16">Findings · exact SHA</text>
+      <rect x="20" y="146" width="106" height="22" rx="11" fill="#FFF1F2"/>
+      <text x="73" y="162" text-anchor="middle" fill="#BE123C" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="800">REVIEW GATE</text>
+    </g>
+
+    <g transform="translate(948 332)">
+      <rect width="260" height="184" rx="24" fill="#FFFFFF" stroke="#FDE68A" stroke-width="2"/>
+      <rect x="18" y="18" width="42" height="42" rx="13" fill="#FEF3C7"/>
+      <text x="39" y="47" text-anchor="middle" fill="#B45309" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="850">4</text>
+      <text x="76" y="48" fill="#111827" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="23" font-weight="800">DECIDE</text>
+      <text x="20" y="92" fill="#475569" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="16">Residual risk visible</text>
+      <text x="20" y="119" fill="#475569" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="16">Human merge authority</text>
+      <rect x="20" y="146" width="106" height="22" rx="11" fill="#FFFBEB"/>
+      <text x="73" y="162" text-anchor="middle" fill="#B45309" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="12" font-weight="800">HUMAN GATE</text>
+    </g>
+  </g>
+
+  <g transform="translate(88 570)">
+    <circle cx="8" cy="8" r="8" fill="#7C3AED"/>
+    <path d="M4 8L7 11L12.5 5.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="26" y="14" fill="#475569" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="650">Plugin-first · reversible · evidence before claims</text>
+  </g>
+</svg>

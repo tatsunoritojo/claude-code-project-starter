@@ -1,0 +1,66 @@
+name: AI-assisted change
+description: Frame one human-sized implementation task before an AI agent starts work.
+title: "[Change] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Keep this small. One issue should produce one reviewable outcome.
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: What observable result should exist when this is done?
+      placeholder: A user can...
+    validations:
+      required: true
+
+  - type: textarea
+    id: non_goals
+    attributes:
+      label: Non-goals
+      description: Name up to three adjacent things this change must not absorb.
+      placeholder: |
+        - No redesign of...
+        - No migration of...
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance checks
+      description: Add three to seven observable, testable checks.
+      placeholder: |
+        - [ ] Given ..., when ..., then ...
+        - [ ] Existing ... still works
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence plan
+      description: Which tests, commands, or manual checks should prove the result?
+      placeholder: npm test; focused reproduction; screenshot; log inspection
+    validations:
+      required: true
+
+  - type: textarea
+    id: boundaries
+    attributes:
+      label: Risk and authority boundaries
+      description: What requires human confirmation, and who makes the final decision?
+      placeholder: No production writes. Human owner approves merge and release.
+    validations:
+      required: true
+
+  - type: input
+    id: base_sha
+    attributes:
+      label: Base SHA
+      description: Full commit SHA at entry. Fill this immediately before implementation.
+      placeholder: 40-character commit SHA
+    validations:
+      required: true

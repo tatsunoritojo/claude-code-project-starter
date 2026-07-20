@@ -71,6 +71,15 @@
 
 テストがカバーしていない経路（migration、外部連携、本番固有設定、ログ設定など）を意識的に書き出す。
 
+## AI支援変更のレビューゲート
+
+- 着手時は `.github/ISSUE_TEMPLATE/ai-change.yml` で成果・非対象・受け入れ条件・base SHAを固定する
+- 完了報告は受け入れ条件ごとの根拠と、検証対象のHEAD SHAを示す
+- 未コミット変更はHEAD SHAに含まれないため、検証の`PASS`と最終ゲートにはclean worktreeを要求する
+- 独立レビューの対象SHAと現在のHEADが異なる場合、レビューは古いものとして扱う
+- AIの承認と、人間によるmerge / release判断を分離する
+- PRでは `.github/PULL_REQUEST_TEMPLATE.md` の人間ゲートまで埋める
+
 ## 関連ドキュメント
 
 - 概要: `docs/01-overview.md`
